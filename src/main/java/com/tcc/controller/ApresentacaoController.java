@@ -84,6 +84,9 @@ public class ApresentacaoController {
             List<LocalDateTime> horariosComum = professorService.encontrarHorariosComuns(professores);
             if(!horariosComum.isEmpty()){
                 LocalDateTime dataHoraApresentacao = horariosComum.get(0);
+                if(apresentacaoRepository.existsByDataHora(dataHoraApresentacao)){
+                    continue;
+                }
 
                 Apresentacao novaApresentacao = new Apresentacao(banca.getId(), professores.get(0).getId(),
                         professores.get(1).getId(), professores.get(2).getId(), dataHoraApresentacao);
