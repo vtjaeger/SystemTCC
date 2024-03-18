@@ -6,5 +6,5 @@ import com.tcc.models.Professor;
 import java.util.List;
 
 public record BancaResponse(Long id, String titulo, String integrante1, String integrante2, String integrante3, String orientador,
-                            List<Professor> professores) {
+                            List<String> nomesProfessores) {
 }

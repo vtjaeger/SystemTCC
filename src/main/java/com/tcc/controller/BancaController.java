@@ -1,6 +1,7 @@
 package com.tcc.controller;
 
 import com.tcc.dtos.request.BancaRequest;
+import com.tcc.dtos.request.ProfessorRequest;
 import com.tcc.dtos.response.BancaResponse;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,14 +38,17 @@ public class BancaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante nao encontrado");
         }
 
-        List<Professor> professores = professorRepository.findAll();
-        for (Professor professor : bancaRequest.professores()) {
-            Professor foundProfessor = professorRepository.findByNome(professor.getNome());
-            if (foundProfessor == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Professor não encontrado: " + professor.getNome());
+        List<Professor> professores = new ArrayList<>();
+        List<Professor> todosProfessores = professorRepository.findAll();
+
+        for(Professor professorRequest : bancaRequest.professores()){
+            Professor professorAtual = professorRepository.findByNome(professorRequest.getNome());
+            if(professorAtual == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("professor nao encontrado");
             }
-            professores.add(foundProfessor);
+            professores.add(professorAtual);
         }
+
 
         Banca novaBanca = new Banca(bancaRequest.titulo(), bancaRequest.integrante1(),
                 bancaRequest.integrante2(), bancaRequest.integrante3(), professores);
@@ -65,7 +70,9 @@ public class BancaController {
                         banca.getIntegrante2(),
                         banca.getIntegrante3(),
                         banca.getOrientador(),
-                        banca.getProfessores()))
+                        banca.getProfessores().stream()
+                                .map(Professor::getNome)
+                                .collect(Collectors.toList())))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(responseList);
     }
