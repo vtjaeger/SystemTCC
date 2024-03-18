@@ -1,4 +1,4 @@
-package com.tcc.dtos;
+package com.tcc.dtos.request;
 
 import java.time.LocalDateTime;
 

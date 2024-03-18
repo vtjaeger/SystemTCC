@@ -1,6 +1,6 @@
 package com.tcc.models;
 
-import com.tcc.dtos.AlunoRequest;
+import com.tcc.dtos.request.AlunoRequest;
 import jakarta.persistence.*;
 
 @Entity

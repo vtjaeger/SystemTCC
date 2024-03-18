@@ -1,6 +1,5 @@
 package com.tcc.models;
 
-import com.tcc.dtos.BancaRequest;
 import jakarta.persistence.*;
 
 import java.util.List;

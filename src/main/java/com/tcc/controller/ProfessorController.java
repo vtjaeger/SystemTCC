@@ -1,7 +1,7 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.HorariosRequest;
-import com.tcc.dtos.ProfessorRequest;
+import com.tcc.dtos.request.HorariosRequest;
+import com.tcc.dtos.request.ProfessorRequest;
 import com.tcc.models.Professor;
 import com.tcc.repository.ProfessorRepository;
 import jakarta.transaction.Transactional;

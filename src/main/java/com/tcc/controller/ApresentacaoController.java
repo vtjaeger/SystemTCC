@@ -1,6 +1,5 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.ApresentacaoRequest;
 import com.tcc.models.Apresentacao;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
@@ -9,15 +8,13 @@ import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.service.ProfessorService;
 import jakarta.transaction.Transactional;
-import org.hibernate.query.derived.AnonymousTupleBasicValuedModelPart;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

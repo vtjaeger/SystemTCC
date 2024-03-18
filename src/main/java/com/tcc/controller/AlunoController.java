@@ -1,6 +1,6 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.AlunoRequest;
+import com.tcc.dtos.request.AlunoRequest;
 import com.tcc.models.Aluno;
 import com.tcc.repository.AlunoRepository;
 import jakarta.transaction.Transactional;

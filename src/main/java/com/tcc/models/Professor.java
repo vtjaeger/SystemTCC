@@ -1,6 +1,6 @@
 package com.tcc.models;
 
-import com.tcc.dtos.ProfessorRequest;
+import com.tcc.dtos.request.ProfessorRequest;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

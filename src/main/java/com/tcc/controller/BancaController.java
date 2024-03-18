@@ -1,6 +1,6 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.BancaRequest;
+import com.tcc.dtos.request.BancaRequest;
 import com.tcc.dtos.response.BancaResponse;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
