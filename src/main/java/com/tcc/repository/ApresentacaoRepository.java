@@ -9,4 +9,7 @@ import java.time.LocalDateTime;
 @Repository
 public interface ApresentacaoRepository extends JpaRepository<Apresentacao, Long> {
     boolean existsByDataHora(LocalDateTime dataHora);
+
+    boolean existsByBancaId(Long bancaId);
+
 }

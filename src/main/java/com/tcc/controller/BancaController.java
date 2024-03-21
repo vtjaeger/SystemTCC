@@ -8,6 +8,7 @@ import com.tcc.models.Professor;
 import com.tcc.repository.AlunoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
+import com.tcc.service.AgendamentoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class BancaController {
     AlunoRepository alunoRepository;
     @Autowired
     ProfessorRepository professorRepository;
+    @Autowired
+    AgendamentoService agendamentoService;
 
     @PostMapping
     public ResponseEntity cadastrarBanca(@RequestBody @Valid BancaRequest bancaRequest) {
@@ -54,6 +57,7 @@ public class BancaController {
                 bancaRequest.integrante2(), bancaRequest.integrante3(), professores);
 
         Banca savedBanca = bancaRepository.save(novaBanca);
+        agendamentoService.marcarDatas(savedBanca);
 
         return ResponseEntity.ok().body(savedBanca);
     }

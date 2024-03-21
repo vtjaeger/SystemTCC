@@ -7,9 +7,11 @@ import com.tcc.repository.ProfessorRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -47,11 +49,18 @@ public class ProfessorController {
         Optional<Professor> professorOptional = professorRepository.findById(id);
         if(professorOptional.isPresent()){
             Professor professor = professorOptional.get();
-            professor.adicionarDisponibilidade(horariosRequest.data(), horariosRequest.horaInicio());
+
+            LocalDateTime novoHorario = horariosRequest.getDateTime();
+
+            if(professor.getHorariosDisponiveis().contains(novoHorario)){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("horario ja cadastrado");
+            }
+
+            professor.adicionarDisponibilidade(novoHorario);
 
             professorRepository.save(professor);
             return ResponseEntity.ok().body("ok");
-        } else{
+        } else {
             return ResponseEntity.notFound().build();
         }
     }

@@ -54,14 +54,10 @@ public class Professor {
         this.horariosDisponiveis = horariosDisponiveis;
     }
 
-    public void adicionarDisponibilidade(String diaMes, String horaInicio) {
-        LocalDate data = LocalDate.parse(diaMes);
-        LocalTime hora = LocalTime.parse(horaInicio);
-        LocalDateTime horario = data.atTime(hora);
-
+    public void adicionarDisponibilidade(LocalDateTime datahora) {
         if(horariosDisponiveis == null){
             this.horariosDisponiveis = new ArrayList<>();
         }
-        horariosDisponiveis.add(horario);
+        horariosDisponiveis.add(datahora);
     }
 }
