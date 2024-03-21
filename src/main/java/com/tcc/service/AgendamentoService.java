@@ -21,11 +21,15 @@ public class AgendamentoService {
         List<Professor> professores = banca.getProfessores();
         List<LocalDateTime> horariosComum = encontrarHorariosComuns(professores);
 
-        if(!horariosComum.isEmpty()){
-            Apresentacao novaApresentacao = new Apresentacao(banca.getId(), professores.get(0).getId(),
-                    professores.get(1).getId(), professores.get(2).getId(), horariosComum.get(0));
-            apresentacaoRepository.save(novaApresentacao);
+        for(LocalDateTime horarioComum : horariosComum){
+            if(!apresentacaoRepository.existsByDataHora(horarioComum)){
+                Apresentacao novaApresentacao = new Apresentacao(banca.getId(), professores.get(0).getId(),
+                        professores.get(1).getId(), professores.get(2).getId(), horarioComum);
+
+                apresentacaoRepository.save(novaApresentacao);
+            }
         }
+
     }
     public List<LocalDateTime> encontrarHorariosComuns(List<Professor> professores) {
 
