@@ -3,7 +3,6 @@ package com.tcc.service;
 import com.tcc.models.Apresentacao;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
-import com.tcc.repository.AlunoRepository;
 import com.tcc.repository.ApresentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +21,13 @@ public class AgendamentoService {
         List<LocalDateTime> horariosComum = encontrarHorariosComuns(professores);
 
         for(LocalDateTime horarioComum : horariosComum){
-            if(!apresentacaoRepository.existsByDataHora(horarioComum)){
-                Apresentacao novaApresentacao = new Apresentacao(banca.getId(), professores.get(0).getId(),
-                        professores.get(1).getId(), professores.get(2).getId(), horarioComum);
+            if(!apresentacaoRepository.existsByBancaId(banca.getId())){
+                if(!apresentacaoRepository.existsByDataHora(horarioComum)){
+                    Apresentacao novaApresentacao = new Apresentacao(banca.getId(), professores.get(0).getId(),
+                            professores.get(1).getId(), professores.get(2).getId(), horarioComum);
 
-                apresentacaoRepository.save(novaApresentacao);
+                    apresentacaoRepository.save(novaApresentacao);
+                }
             }
         }
 
