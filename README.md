@@ -14,6 +14,5 @@
 <ul>
     <li>Java</li>
     <li>Spring Boot</li>
-    <li>Hibernate</li>
     <li>MySQL</li>
 </ul>
