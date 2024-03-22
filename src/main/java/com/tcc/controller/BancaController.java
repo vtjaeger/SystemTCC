@@ -12,6 +12,7 @@ import com.tcc.service.AgendamentoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webservices.client.HttpWebServiceMessageSenderBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,10 @@ public class BancaController {
                 !alunoRepository.existsByNome(bancaRequest.integrante2()) ||
                 !alunoRepository.existsByNome(bancaRequest.integrante3())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante nao encontrado");
+        }
+
+        if(bancaRepository.existsByIntegrante1OrIntegrante2OrIntegrante3(bancaRequest.integrante1(), bancaRequest.integrante2(), bancaRequest.integrante3())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante vinculado a outra banca");
         }
 
         List<Professor> professores = new ArrayList<>();

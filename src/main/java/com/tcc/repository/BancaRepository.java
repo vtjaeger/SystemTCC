@@ -9,4 +9,5 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface BancaRepository extends JpaRepository<Banca, Long> {
+    boolean existsByIntegrante1OrIntegrante2OrIntegrante3(String integrante1, String integrante2, String integrante3);
 }
