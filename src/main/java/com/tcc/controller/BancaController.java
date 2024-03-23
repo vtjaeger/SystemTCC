@@ -52,7 +52,6 @@ public class BancaController {
         }
 
         List<Professor> professores = new ArrayList<>();
-        List<Professor> todosProfessores = professorRepository.findAll();
 
         for(Professor professorRequest : bancaRequest.professores()){
             Professor professorAtual = professorRepository.findByNome(professorRequest.getNome());
