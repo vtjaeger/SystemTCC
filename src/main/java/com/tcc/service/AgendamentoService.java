@@ -36,13 +36,15 @@ public class AgendamentoService {
             for (LocalDateTime horario : horariosComum) {
                 if (!apresentacaoRepository.existsByDataHora(horario)) {
                     salvarApresentacao(banca.getId(), professor1, professor2, professor3, horario);
+                    professor1.getHorariosDisponiveis().remove(horario);
+                    professor2.getHorariosDisponiveis().remove(horario);
+                    professor3.getHorariosDisponiveis().remove(horario);
                 } else {
                     System.out.println(horario + " ja cadastrado");
                 }
 
             }
         }
-
     }
 
     public void salvarApresentacao(Long bancaId, Professor professor1, Professor professor2, Professor professor3, LocalDateTime horario) {

@@ -11,4 +11,5 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
     Professor findByNome(String nome);
 
     boolean findByhorariosDisponiveis(LocalDateTime professor);
+
 }
