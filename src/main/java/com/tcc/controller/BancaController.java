@@ -2,10 +2,12 @@ package com.tcc.controller;
 
 import com.tcc.dtos.request.BancaRequest;
 import com.tcc.dtos.request.ProfessorRequest;
+import com.tcc.dtos.response.ApresentacaoSucess;
 import com.tcc.dtos.response.BancaResponse;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
 import com.tcc.repository.AlunoRepository;
+import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.service.AgendamentoService;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +36,8 @@ public class BancaController {
     ProfessorRepository professorRepository;
     @Autowired
     AgendamentoService agendamentoService;
+    @Autowired
+    ApresentacaoRepository apresentacaoRepository;
 
     @PostMapping
     public ResponseEntity cadastrarBanca(@RequestBody @Valid BancaRequest bancaRequest) {
@@ -62,8 +67,12 @@ public class BancaController {
                 bancaRequest.integrante2(), bancaRequest.integrante3(), professores);
 
         Banca savedBanca = bancaRepository.save(novaBanca);
-        agendamentoService.marcarDatas(savedBanca);
 
+        if(!apresentacaoRepository.existsByBancaId(savedBanca.getId())){
+            agendamentoService.marcarDatas(savedBanca);
+
+            return ResponseEntity.ok().body(savedBanca);
+        }
         return ResponseEntity.ok().body(savedBanca);
     }
 

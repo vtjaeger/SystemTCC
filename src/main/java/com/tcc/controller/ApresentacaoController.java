@@ -29,31 +29,4 @@ public class ApresentacaoController {
         var bancas = apresentacaoRepository.findAll();
         return ResponseEntity.ok().body(bancas);
     }
-
-//    @GetMapping("/marcar")
-//    public ResponseEntity marcarHorario() {
-//        // adicionar data minima e maxima
-//
-//        List<Banca> todasBancas = bancaRepository.findAll();
-//
-//        for (Banca banca : todasBancas) {
-//            if (apresentacaoRepository.existsByBancaId(banca.getId())) {
-//                continue;
-//            }
-//
-//            List<Professor> professores = banca.getProfessores();
-//
-//            List<LocalDateTime> horariosComum = agendamentoService.encontrarHorariosComuns(professores);
-//
-//            if (!horariosComum.isEmpty()) {
-//                Apresentacao novaApresentacao = new Apresentacao(banca.getId(), professores.get(0).getId(),
-//                        professores.get(1).getId(), professores.get(2).getId(), horariosComum.get(0));
-//                apresentacaoRepository.save(novaApresentacao);
-//
-//                return ResponseEntity.ok().body(novaApresentacao);
-//            }
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.CONFLICT).body("Nenhum horário disponível para marcar apresentação.");
-//    }
 }
