@@ -6,8 +6,10 @@ import com.tcc.models.Professor;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,36 +21,59 @@ public class AgendamentoService {
     @Autowired
     ProfessorRepository professorRepository;
 
-    public void marcarDatas(Banca banca) {
-        var professor1 = banca.getProfessores().get(0);
-        var professor2 = banca.getProfessores().get(1);
-        var professor3 = banca.getProfessores().get(2);
+    public void marcarData(Banca banca){
+        List<Professor> professores = banca.getProfessores();
+        List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(professores.get(0), professores.get(1), professores.get(2));
 
-        List<LocalDateTime> horariosP1 = professor1.getHorariosDisponiveis();
-        List<LocalDateTime> horariosP2 = professor2.getHorariosDisponiveis();
-        List<LocalDateTime> horariosP3 = professor3.getHorariosDisponiveis();
+        if (!horariosEmComum.isEmpty()) {
+            salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), professores.get(2), horariosEmComum.get(0));
+        } else {
+            List<Professor> todosProfessores = professorRepository.findAll();
 
-        List<LocalDateTime> horariosComum = new ArrayList<>(horariosP1);
-        horariosComum.retainAll(horariosP2);
-        horariosComum.retainAll(horariosP3);
+            List<Professor> professoresComHorariosIguais = new ArrayList<>();
 
-        if (!horariosComum.isEmpty()) {
-            for (LocalDateTime horario : horariosComum) {
-                if (!apresentacaoRepository.existsByDataHora(horario)) {
-                    salvarApresentacao(banca.getId(), professor1, professor2, professor3, horario);
-                    professor1.getHorariosDisponiveis().remove(horario);
-                    professor2.getHorariosDisponiveis().remove(horario);
-                    professor3.getHorariosDisponiveis().remove(horario);
-                } else {
-                    System.out.println(horario + " ja cadastrado");
+            LocalDateTime horarioInicio = LocalDateTime.of(2024, 3, 22, 0, 0);
+            LocalDateTime horarioFinal = LocalDateTime.of(2024, 3, 31, 0, 0);
+
+            for(LocalDateTime i = horarioInicio; i.isBefore(horarioFinal); i = i.plusHours(1)){
+                for(Professor professor : todosProfessores){
+                    if(professor.getHorariosDisponiveis().contains(i)){
+                        professoresComHorariosIguais.add(professor);
+                    }
+                    if(professoresComHorariosIguais.size() >=3){
+                        if(!apresentacaoRepository.existsByBancaId(banca.getId())){
+                            if(!apresentacaoRepository.existsByDataHora(i)){
+                                salvarApresentacao(banca.getId(), professoresComHorariosIguais.get(0),
+                                        professoresComHorariosIguais.get(1), professoresComHorariosIguais.get(2), i);
+                                break;
+                            }
+                        }
+                    }
                 }
-
             }
         }
     }
 
-    public void salvarApresentacao(Long bancaId, Professor professor1, Professor professor2, Professor professor3, LocalDateTime horario) {
-        var novaApresentacao = new Apresentacao(bancaId, professor1.getId(), professor2.getId(), professor3.getId(), horario);
-        apresentacaoRepository.save(novaApresentacao);
+
+    public List<LocalDateTime> encontrarHorariosEmComumProfessoresDaBanca(Professor professor1, Professor professor2,
+                                                                          Professor professor3){
+        List<LocalDateTime> horarios1 = professor1.getHorariosDisponiveis();
+        List<LocalDateTime> horarios2 = professor2.getHorariosDisponiveis();
+        List<LocalDateTime> horarios3 = professor3.getHorariosDisponiveis();
+
+        List<LocalDateTime> horariosEmComum = new ArrayList<>(horarios1);
+        horariosEmComum.retainAll(horarios2);
+        horariosEmComum.retainAll(horarios3);
+
+        horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario));
+
+        return horariosEmComum;
+    }
+
+    private void salvarApresentacao(Long bancaId, Professor professor1, Professor professor2, Professor professor3,
+                                    LocalDateTime horario) {
+        Apresentacao apresentacao = new Apresentacao(bancaId, professor1.getId(), professor2.getId(), professor3.getId(),
+                horario);
+        apresentacaoRepository.save(apresentacao);
     }
 }

@@ -68,7 +68,7 @@ public class BancaController {
         Banca savedBanca = bancaRepository.save(novaBanca);
 
         if(!apresentacaoRepository.existsByBancaId(savedBanca.getId())){
-            agendamentoService.marcarDatas(savedBanca);
+            agendamentoService.marcarData(savedBanca);
 
             return ResponseEntity.ok().body(savedBanca);
         }
