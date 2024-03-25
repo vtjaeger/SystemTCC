@@ -25,8 +25,6 @@ public class ApresentacaoController {
     ProfessorRepository professorRepository;
     @Autowired
     BancaRepository bancaRepository;
-    @Autowired
-    AgendamentoService agendamentoService;
 
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getApresentacoes() {

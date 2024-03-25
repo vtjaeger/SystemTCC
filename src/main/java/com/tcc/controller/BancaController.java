@@ -35,8 +35,6 @@ public class BancaController {
     ProfessorRepository professorRepository;
     @Autowired
     AgendamentoService agendamentoService;
-    @Autowired
-    ApresentacaoRepository apresentacaoRepository;
 
     @PostMapping
     public ResponseEntity cadastrarBanca(@RequestBody @Valid BancaRequest bancaRequest) {
@@ -66,7 +64,6 @@ public class BancaController {
                 bancaRequest.integrante2(), bancaRequest.integrante3(), professores);
 
         Banca savedBanca = bancaRepository.save(novaBanca);
-
 
         LocalDateTime dataApresentacao = agendamentoService.marcarData(savedBanca);
         if (dataApresentacao != null) {
