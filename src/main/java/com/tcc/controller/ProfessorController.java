@@ -20,6 +20,7 @@ import java.util.Optional;
 public class ProfessorController {
     @Autowired
     ProfessorRepository professorRepository;
+
     @PostMapping
     public ResponseEntity cadastrarProfessor(@RequestBody @Valid ProfessorRequest professorRequest){
         var novoProfessor = new Professor(professorRequest);

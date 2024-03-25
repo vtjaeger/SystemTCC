@@ -67,7 +67,6 @@ public class BancaController {
 
         Banca savedBanca = bancaRepository.save(novaBanca);
 
-        // Salva a banca no banco de dados antes de verificar a disponibilidade para marcar a apresentação
         LocalDateTime dataApresentacao = agendamentoService.marcarData(savedBanca);
         if (dataApresentacao != null) {
             return ResponseEntity.ok().body(new ApresentacaoBanca(
@@ -85,12 +84,11 @@ public class BancaController {
             ApresentacaoFail response = new ApresentacaoFail(savedBanca.getId(), savedBanca.getTitulo(), savedBanca.getIntegrante1(),
                     savedBanca.getIntegrante2(), savedBanca.getIntegrante3(), savedBanca.getOrientador(),
                     savedBanca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
-                    "Data da apresentacao a ser marcada");
+                    "data da apresentacao ainda nao foi marcada");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-
 
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getAllBancas() {

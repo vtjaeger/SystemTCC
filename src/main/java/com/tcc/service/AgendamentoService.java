@@ -63,7 +63,6 @@ public class AgendamentoService {
         return null;
     }
 
-
     public List<LocalDateTime> encontrarHorariosEmComumProfessoresDaBanca(Professor professor1, Professor professor2,
                                                                           Professor professor3){
         List<LocalDateTime> horarios1 = professor1.getHorariosDisponiveis();

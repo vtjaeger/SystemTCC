@@ -1,4 +1,8 @@
 package com.tcc.dtos.request;
 
-public record ProfessorRequest(String nome) {
+import jakarta.validation.constraints.NotNull;
+
+public record ProfessorRequest(
+        @NotNull
+        String nome) {
 }

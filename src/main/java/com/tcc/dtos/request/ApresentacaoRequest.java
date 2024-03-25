@@ -1,6 +1,18 @@
 package com.tcc.dtos.request;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
-public record ApresentacaoRequest(Long bancaId, Long professor1Id, Long professor2Id, Long professor3Id, LocalDateTime dataHora) {
+public record ApresentacaoRequest(
+        @NotNull
+        Long bancaId,
+        @NotNull
+        Long professor1Id,
+        @NotNull
+        Long professor2Id,
+        @NotNull
+        Long professor3Id,
+        @NotNull
+        LocalDateTime dataHora) {
 }
