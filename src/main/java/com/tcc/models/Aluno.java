@@ -9,6 +9,7 @@ public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    @Column(unique = true)
     private String nome;
 
     public Aluno(Long id, String nome) {

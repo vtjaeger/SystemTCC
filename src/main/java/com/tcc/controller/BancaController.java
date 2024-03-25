@@ -46,17 +46,17 @@ public class BancaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante nao encontrado");
         }
 
-        if(bancaRepository.existsByIntegrante1OrIntegrante2OrIntegrante3(bancaRequest.integrante1(), bancaRequest.integrante2(),
-                bancaRequest.integrante3())){
+        if (bancaRepository.existsByIntegrante1OrIntegrante2OrIntegrante3(bancaRequest.integrante1(), bancaRequest.integrante2(),
+                bancaRequest.integrante3())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante vinculado a outra banca");
         }
 
         List<Professor> professores = new ArrayList<>();
 
-        for(Professor professorRequest : bancaRequest.professores()){
+        for (Professor professorRequest : bancaRequest.professores()) {
             Professor professorAtual = professorRepository.findByNome(professorRequest.getNome());
 
-            if(professorAtual == null){
+            if (professorAtual == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("professor nao encontrado");
             }
             professores.add(professorAtual);
@@ -67,19 +67,21 @@ public class BancaController {
 
         Banca savedBanca = bancaRepository.save(novaBanca);
 
+
         LocalDateTime dataApresentacao = agendamentoService.marcarData(savedBanca);
         if (dataApresentacao != null) {
             return ResponseEntity.ok().body(new ApresentacaoBanca(
-                            savedBanca.getId(),
-                            savedBanca.getTitulo(),
-                            savedBanca.getIntegrante1(),
-                            savedBanca.getIntegrante2(),
-                            savedBanca.getIntegrante3(),
-                            savedBanca.getProfessores().stream()
-                                    .map(Professor::getNome)
-                                    .collect(Collectors.toList()),
-                            savedBanca.getDataHoraApresentacao()
-                    ));
+                    savedBanca.getId(),
+                    savedBanca.getTitulo(),
+                    savedBanca.getIntegrante1(),
+                    savedBanca.getIntegrante2(),
+                    savedBanca.getIntegrante3(),
+                    savedBanca.getOrientador(),
+                    savedBanca.getProfessores().stream()
+                            .map(Professor::getNome)
+                            .collect(Collectors.toList()),
+                    savedBanca.getDataHoraApresentacao()
+            ));
         } else {
             ApresentacaoFail response = new ApresentacaoFail(savedBanca.getId(), savedBanca.getTitulo(), savedBanca.getIntegrante1(),
                     savedBanca.getIntegrante2(), savedBanca.getIntegrante3(), savedBanca.getOrientador(),
@@ -90,23 +92,34 @@ public class BancaController {
         }
     }
 
+
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getAllBancas() {
         List<Banca> bancas = bancaRepository.findAll();
-        List<ApresentacaoBanca> responseList = bancas.stream()
-                .map(banca -> new ApresentacaoBanca(
-                        banca.getId(),
-                        banca.getTitulo(),
-                        banca.getIntegrante1(),
-                        banca.getIntegrante2(),
-                        banca.getIntegrante3(),
-                        banca.getProfessores().stream()
-                                .map(Professor::getNome)
-                                .collect(Collectors.toList()),
-                        banca.getDataHoraApresentacao()
 
-                ))
+        List<ApresentacaoBanca> responseList = bancas.stream()
+                .map(banca -> {
+                    if (banca.getDataHoraApresentacao() == null) {
+                        return new ApresentacaoBanca(banca.getId(), banca.getTitulo(), banca.getIntegrante1(),
+                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador(), null, null);
+                    } else {
+                        List<String> nomesProfessores = banca.getProfessores().stream()
+                                .map(Professor::getNome)
+                                .collect(Collectors.toList());
+                        return new ApresentacaoBanca(
+                                banca.getId(),
+                                banca.getTitulo(),
+                                banca.getIntegrante1(),
+                                banca.getIntegrante2(),
+                                banca.getIntegrante3(),
+                                banca.getOrientador(),
+                                nomesProfessores,
+                                banca.getDataHoraApresentacao()
+                        );
+                    }
+                })
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok().body(responseList);
     }
 }

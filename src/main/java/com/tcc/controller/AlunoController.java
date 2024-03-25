@@ -6,6 +6,7 @@ import com.tcc.repository.AlunoRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,10 @@ public class AlunoController {
     @PostMapping
     public ResponseEntity cadastrarAluno(@RequestBody @Valid AlunoRequest alunoRequest){
         var novoAluno = new Aluno(alunoRequest);
+
+        if(alunoRepository.existsByNome(alunoRequest.nome())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(alunoRequest.nome() + " ja registrado");
+        }
 
         return ResponseEntity.ok().body(alunoRepository.save(novoAluno));
     }
