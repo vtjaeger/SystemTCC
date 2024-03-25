@@ -2,6 +2,7 @@ package com.tcc.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ public class Banca {
     private String integrante1;
     private String integrante2;
     private String integrante3;
-
+    private LocalDateTime dataHoraApresentacao;
     private final String orientador = "Matheus";
 
     @ManyToMany
@@ -24,7 +25,6 @@ public class Banca {
         this.id = id;
         this.titulo = titulo;
     }
-
     public Banca() {
     }
 
@@ -82,6 +82,14 @@ public class Banca {
 
     public List<Professor> getProfessores() {
         return professores;
+    }
+
+    public LocalDateTime getDataHoraApresentacao() {
+        return dataHoraApresentacao;
+    }
+
+    public void setDataHoraApresentacao(LocalDateTime dataHoraApresentacao) {
+        this.dataHoraApresentacao = dataHoraApresentacao;
     }
 
     public void setProfessores(List<Professor> professores) {

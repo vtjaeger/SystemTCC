@@ -4,6 +4,7 @@ import com.tcc.models.Apresentacao;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
 import com.tcc.repository.ApresentacaoRepository;
+import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
@@ -20,6 +21,8 @@ public class AgendamentoService {
     ApresentacaoRepository apresentacaoRepository;
     @Autowired
     ProfessorRepository professorRepository;
+    @Autowired
+    BancaRepository bancaRepository;
 
     public LocalDateTime  marcarData(Banca banca){
         List<Professor> professores = banca.getProfessores();
@@ -81,5 +84,9 @@ public class AgendamentoService {
         Apresentacao apresentacao = new Apresentacao(bancaId, professor1.getId(), professor2.getId(), professor3.getId(),
                 horario);
         apresentacaoRepository.save(apresentacao);
+
+        Banca banca = bancaRepository.findById(bancaId).orElseThrow();
+        banca.setDataHoraApresentacao(horario);
+        bancaRepository.save(banca);
     }
 }

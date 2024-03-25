@@ -1,6 +1,6 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.response.GetAllApresentacoes;
+import com.tcc.dtos.response.ApresentacaoBanca;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
@@ -29,9 +29,10 @@ public class ApresentacaoController {
     AgendamentoService agendamentoService;
 
     @GetMapping
-    public ResponseEntity<List<GetAllApresentacoes>> getApresentacoes() {
-        List<GetAllApresentacoes> responseList = apresentacaoRepository.findAll().stream()
-                .map(apresentacao -> new GetAllApresentacoes(
+    public ResponseEntity<List<ApresentacaoBanca>> getApresentacoes() {
+        List<ApresentacaoBanca> responseList = apresentacaoRepository.findAll().stream()
+                .map(apresentacao -> new ApresentacaoBanca(
+                        apresentacao.getBancaId(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getTitulo(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante1(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante2(),

@@ -1,10 +1,8 @@
 package com.tcc.controller;
 
 import com.tcc.dtos.request.BancaRequest;
-import com.tcc.dtos.request.ProfessorRequest;
+import com.tcc.dtos.response.ApresentacaoBanca;
 import com.tcc.dtos.response.ApresentacaoFail;
-import com.tcc.dtos.response.ApresentacaoSucess;
-import com.tcc.dtos.response.BancaResponse;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
 import com.tcc.repository.AlunoRepository;
@@ -15,7 +13,6 @@ import com.tcc.service.AgendamentoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webservices.client.HttpWebServiceMessageSenderBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/banca")
@@ -72,16 +70,17 @@ public class BancaController {
         // Salva a banca no banco de dados antes de verificar a disponibilidade para marcar a apresentação
         LocalDateTime dataApresentacao = agendamentoService.marcarData(savedBanca);
         if (dataApresentacao != null) {
-            return ResponseEntity.ok().body(new ApresentacaoSucess(
-                    savedBanca.getId(),
-                    savedBanca.getTitulo(),
-                    savedBanca.getIntegrante1(),
-                    savedBanca.getIntegrante2(),
-                    savedBanca.getIntegrante3(),
-                    savedBanca.getOrientador(),
-                    savedBanca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
-                    dataApresentacao));
-
+            return ResponseEntity.ok().body(new ApresentacaoBanca(
+                            savedBanca.getId(),
+                            savedBanca.getTitulo(),
+                            savedBanca.getIntegrante1(),
+                            savedBanca.getIntegrante2(),
+                            savedBanca.getIntegrante3(),
+                            savedBanca.getProfessores().stream()
+                                    .map(Professor::getNome)
+                                    .collect(Collectors.toList()),
+                            savedBanca.getDataHoraApresentacao()
+                    ));
         } else {
             ApresentacaoFail response = new ApresentacaoFail(savedBanca.getId(), savedBanca.getTitulo(), savedBanca.getIntegrante1(),
                     savedBanca.getIntegrante2(), savedBanca.getIntegrante3(), savedBanca.getOrientador(),
@@ -94,19 +93,21 @@ public class BancaController {
 
 
     @GetMapping
-    public ResponseEntity<List<BancaResponse>> getAllBancas() {
+    public ResponseEntity<List<ApresentacaoBanca>> getAllBancas() {
         List<Banca> bancas = bancaRepository.findAll();
-        List<BancaResponse> responseList = bancas.stream()
-                .map(banca -> new BancaResponse(
+        List<ApresentacaoBanca> responseList = bancas.stream()
+                .map(banca -> new ApresentacaoBanca(
                         banca.getId(),
                         banca.getTitulo(),
                         banca.getIntegrante1(),
                         banca.getIntegrante2(),
                         banca.getIntegrante3(),
-                        banca.getOrientador(),
                         banca.getProfessores().stream()
                                 .map(Professor::getNome)
-                                .collect(Collectors.toList())))
+                                .collect(Collectors.toList()),
+                        banca.getDataHoraApresentacao()
+
+                ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(responseList);
     }
