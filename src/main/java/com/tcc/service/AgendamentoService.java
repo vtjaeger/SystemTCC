@@ -21,37 +21,43 @@ public class AgendamentoService {
     @Autowired
     ProfessorRepository professorRepository;
 
-    public void marcarData(Banca banca){
+    public LocalDateTime  marcarData(Banca banca){
         List<Professor> professores = banca.getProfessores();
-        List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(professores.get(0), professores.get(1), professores.get(2));
+
+        List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(professores.get(0), professores.get(1),
+                professores.get(2));
 
         if (!horariosEmComum.isEmpty()) {
+            LocalDateTime dataMarcada = horariosEmComum.get(0);
+
             salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), professores.get(2), horariosEmComum.get(0));
+
+            return dataMarcada;
         } else {
             List<Professor> todosProfessores = professorRepository.findAll();
-
-            List<Professor> professoresComHorariosIguais = new ArrayList<>();
 
             LocalDateTime horarioInicio = LocalDateTime.of(2024, 3, 22, 0, 0);
             LocalDateTime horarioFinal = LocalDateTime.of(2024, 3, 31, 0, 0);
 
-            for(LocalDateTime i = horarioInicio; i.isBefore(horarioFinal); i = i.plusHours(1)){
+            for(LocalDateTime horario = horarioInicio; horario.isBefore(horarioFinal); horario = horario.plusHours(1)){
+                List<Professor> professoresComHorariosIguais = new ArrayList<>();
+
                 for(Professor professor : todosProfessores){
-                    if(professor.getHorariosDisponiveis().contains(i)){
+                    if(professor.getHorariosDisponiveis().contains(horario)){
                         professoresComHorariosIguais.add(professor);
                     }
-                    if(professoresComHorariosIguais.size() >=3){
-                        if(!apresentacaoRepository.existsByBancaId(banca.getId())){
-                            if(!apresentacaoRepository.existsByDataHora(i)){
-                                salvarApresentacao(banca.getId(), professoresComHorariosIguais.get(0),
-                                        professoresComHorariosIguais.get(1), professoresComHorariosIguais.get(2), i);
-                                break;
-                            }
+
+                    if(professoresComHorariosIguais.size() >= 3){
+                        if(!apresentacaoRepository.existsByBancaId(banca.getId()) && !apresentacaoRepository.existsByDataHora(horario)){
+                            salvarApresentacao(banca.getId(), professoresComHorariosIguais.get(0),
+                                    professoresComHorariosIguais.get(1), professoresComHorariosIguais.get(2), horario);
+                            return horario;
                         }
                     }
                 }
             }
         }
+        return null;
     }
 
 

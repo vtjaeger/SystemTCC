@@ -2,6 +2,7 @@ package com.tcc.controller;
 
 import com.tcc.dtos.request.BancaRequest;
 import com.tcc.dtos.request.ProfessorRequest;
+import com.tcc.dtos.response.ApresentacaoFail;
 import com.tcc.dtos.response.ApresentacaoSucess;
 import com.tcc.dtos.response.BancaResponse;
 import com.tcc.models.Banca;
@@ -47,7 +48,8 @@ public class BancaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante nao encontrado");
         }
 
-        if(bancaRepository.existsByIntegrante1OrIntegrante2OrIntegrante3(bancaRequest.integrante1(), bancaRequest.integrante2(), bancaRequest.integrante3())){
+        if(bancaRepository.existsByIntegrante1OrIntegrante2OrIntegrante3(bancaRequest.integrante1(), bancaRequest.integrante2(),
+                bancaRequest.integrante3())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante vinculado a outra banca");
         }
 
@@ -55,24 +57,39 @@ public class BancaController {
 
         for(Professor professorRequest : bancaRequest.professores()){
             Professor professorAtual = professorRepository.findByNome(professorRequest.getNome());
+
             if(professorAtual == null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("professor nao encontrado");
             }
             professores.add(professorAtual);
         }
 
-
         Banca novaBanca = new Banca(bancaRequest.titulo(), bancaRequest.integrante1(),
                 bancaRequest.integrante2(), bancaRequest.integrante3(), professores);
 
         Banca savedBanca = bancaRepository.save(novaBanca);
 
-        if(!apresentacaoRepository.existsByBancaId(savedBanca.getId())){
-            agendamentoService.marcarData(savedBanca);
+        // Salva a banca no banco de dados antes de verificar a disponibilidade para marcar a apresentação
+        LocalDateTime dataApresentacao = agendamentoService.marcarData(savedBanca);
+        if (dataApresentacao != null) {
+            return ResponseEntity.ok().body(new ApresentacaoSucess(
+                    savedBanca.getId(),
+                    savedBanca.getTitulo(),
+                    savedBanca.getIntegrante1(),
+                    savedBanca.getIntegrante2(),
+                    savedBanca.getIntegrante3(),
+                    savedBanca.getOrientador(),
+                    savedBanca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
+                    dataApresentacao));
 
-            return ResponseEntity.ok().body(savedBanca);
+        } else {
+            ApresentacaoFail response = new ApresentacaoFail(savedBanca.getId(), savedBanca.getTitulo(), savedBanca.getIntegrante1(),
+                    savedBanca.getIntegrante2(), savedBanca.getIntegrante3(), savedBanca.getOrientador(),
+                    savedBanca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
+                    "Data da apresentacao a ser marcada");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        return ResponseEntity.ok().body(savedBanca);
     }
 
 

@@ -1,5 +1,6 @@
 package com.tcc.controller;
 
+import com.tcc.dtos.response.GetAllApresentacoes;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
@@ -10,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/apresentacao")
@@ -25,8 +29,21 @@ public class ApresentacaoController {
     AgendamentoService agendamentoService;
 
     @GetMapping
-    public ResponseEntity getApresentacoes(){
-        var bancas = apresentacaoRepository.findAll();
-        return ResponseEntity.ok().body(bancas);
+    public ResponseEntity<List<GetAllApresentacoes>> getApresentacoes() {
+        List<GetAllApresentacoes> responseList = apresentacaoRepository.findAll().stream()
+                .map(apresentacao -> new GetAllApresentacoes(
+                        bancaRepository.findById(apresentacao.getBancaId()).get().getTitulo(),
+                        bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante1(),
+                        bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante2(),
+                        bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante3(),
+                        List.of(
+                                professorRepository.findById(apresentacao.getProfessor1Id()).get().getNome(),
+                                professorRepository.findById(apresentacao.getProfessor2Id()).get().getNome(),
+                                professorRepository.findById(apresentacao.getProfessor3Id()).get().getNome()
+                        ),
+                        apresentacao.getDataHora()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(responseList);
     }
 }
