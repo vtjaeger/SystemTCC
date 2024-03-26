@@ -42,8 +42,7 @@ public class ApresentacaoController {
 
                         List.of(
                                 professorRepository.findById(apresentacao.getProfessor1Id()).get().getNome(),
-                                professorRepository.findById(apresentacao.getProfessor2Id()).get().getNome(),
-                                professorRepository.findById(apresentacao.getProfessor3Id()).get().getNome()
+                                professorRepository.findById(apresentacao.getProfessor2Id()).get().getNome()
                         ),
                         apresentacao.getDataHora()
                 ))

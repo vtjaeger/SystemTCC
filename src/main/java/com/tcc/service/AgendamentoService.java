@@ -54,9 +54,7 @@ public class AgendamentoService {
         if (!horariosEmComum.isEmpty()) {
             LocalDateTime dataMarcada = horariosEmComum.get(0);
 
-            if(apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).plusHours(2)) ||
-                    apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).minusHours(2)) ||
-            apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).minusHours(1)) ||
+            if(apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).minusHours(1)) ||
                     apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).plusHours(1))){
                 dataMarcada = null;
 
@@ -80,9 +78,7 @@ public class AgendamentoService {
                     if(orientador.getHorariosDisponiveis().contains(horario)){
                         if(professor.getHorariosDisponiveis().contains(horario)){
 
-                            if (apresentacaoRepository.existsByDataHora(horario.plusHours(2)) ||
-                                    apresentacaoRepository.existsByDataHora(horario.minusHours(2)) ||
-                            apresentacaoRepository.existsByDataHora(horario.minusHours(1)) ||
+                            if (apresentacaoRepository.existsByDataHora(horario.minusHours(1)) ||
                                     apresentacaoRepository.existsByDataHora(horario.plusHours(1))) {
                                 break;
                             } else {
@@ -117,12 +113,9 @@ public class AgendamentoService {
         horariosEmComum.retainAll(horarios2);
         horariosEmComum.retainAll(horarios3);
 
-        horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.minusHours(2)));
-        horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.plusHours(2)));
         horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.minusHours(1)));
         horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.plusHours(1)));
         horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario));
-
         return horariosEmComum;
     }
 
