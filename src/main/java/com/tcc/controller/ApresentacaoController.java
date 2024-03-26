@@ -1,6 +1,7 @@
 package com.tcc.controller;
 
 import com.tcc.dtos.response.ApresentacaoBanca;
+import com.tcc.models.Banca;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
@@ -25,6 +26,8 @@ public class ApresentacaoController {
     ProfessorRepository professorRepository;
     @Autowired
     BancaRepository bancaRepository;
+    @Autowired
+    AgendamentoService agendamentoService;
 
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getApresentacoes() {
@@ -46,5 +49,16 @@ public class ApresentacaoController {
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(responseList);
+    }
+
+    @GetMapping("/marcar")
+    public ResponseEntity marcarDatas() {
+        List<Banca> bancas = bancaRepository.findAll();
+
+        for (Banca banca : bancas) {
+            agendamentoService.marcarData(banca);
+        }
+
+        return ResponseEntity.ok().body(bancas);
     }
 }

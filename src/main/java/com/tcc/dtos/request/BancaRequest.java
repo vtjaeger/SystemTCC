@@ -17,6 +17,8 @@ public record BancaRequest(
         String integrante2,
         @NotBlank
         String integrante3,
+        @NotBlank
+        String orientador,
         @NotNull
         @NotEmpty
         List<Professor> professores) {

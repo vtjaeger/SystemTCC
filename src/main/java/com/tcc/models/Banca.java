@@ -16,8 +16,8 @@ public class Banca {
     private String integrante2;
     private String integrante3;
     private LocalDateTime dataHoraApresentacao;
-    private final String orientador = "Matheus";
-
+    @ManyToOne
+    private Professor orientador;
     @ManyToMany
     private List<Professor> professores;
 
@@ -25,14 +25,28 @@ public class Banca {
         this.id = id;
         this.titulo = titulo;
     }
+
     public Banca() {
     }
 
-    public Banca(String titulo, String integrante1, String integrante2, String integrante3, List<Professor> professores) {
+    public Banca(String titulo, String integrante1, String integrante2, String integrante3, LocalDateTime dataHoraApresentacao,
+                 Professor orientador, List<Professor> professores) {
         this.titulo = titulo;
         this.integrante1 = integrante1;
         this.integrante2 = integrante2;
         this.integrante3 = integrante3;
+        this.dataHoraApresentacao = dataHoraApresentacao;
+        this.orientador = orientador;
+        this.professores = professores;
+    }
+
+    public Banca(String titulo, String integrante1, String integrante2, String integrante3, Professor orientador,
+                 List<Professor> professores) {
+        this.titulo = titulo;
+        this.integrante1 = integrante1;
+        this.integrante2 = integrante2;
+        this.integrante3 = integrante3;
+        this.orientador = orientador;
         this.professores = professores;
     }
 
@@ -76,10 +90,6 @@ public class Banca {
         this.integrante3 = integrante3;
     }
 
-    public String getOrientador() {
-        return orientador;
-    }
-
     public List<Professor> getProfessores() {
         return professores;
     }
@@ -90,6 +100,14 @@ public class Banca {
 
     public void setDataHoraApresentacao(LocalDateTime dataHoraApresentacao) {
         this.dataHoraApresentacao = dataHoraApresentacao;
+    }
+
+    public Professor getOrientador() {
+        return orientador;
+    }
+
+    public void setOrientador(Professor orientador) {
+        this.orientador = orientador;
     }
 
     public void setProfessores(List<Professor> professores) {

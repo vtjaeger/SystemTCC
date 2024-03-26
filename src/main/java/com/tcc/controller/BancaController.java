@@ -49,6 +49,12 @@ public class BancaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante vinculado a outra banca");
         }
 
+        Professor orientador = professorRepository.findByNome(bancaRequest.orientador());
+
+        if(orientador == null){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("erro");
+        }
+
         List<Professor> professores = new ArrayList<>();
 
         for (Professor professorRequest : bancaRequest.professores()) {
@@ -61,32 +67,11 @@ public class BancaController {
         }
 
         Banca novaBanca = new Banca(bancaRequest.titulo(), bancaRequest.integrante1(),
-                bancaRequest.integrante2(), bancaRequest.integrante3(), professores);
+                bancaRequest.integrante2(), bancaRequest.integrante3(), orientador, professores);
 
         Banca savedBanca = bancaRepository.save(novaBanca);
 
-        LocalDateTime dataApresentacao = agendamentoService.marcarData(savedBanca);
-        if (dataApresentacao != null) {
-            return ResponseEntity.ok().body(new ApresentacaoBanca(
-                    savedBanca.getId(),
-                    savedBanca.getTitulo(),
-                    savedBanca.getIntegrante1(),
-                    savedBanca.getIntegrante2(),
-                    savedBanca.getIntegrante3(),
-                    savedBanca.getOrientador(),
-                    savedBanca.getProfessores().stream()
-                            .map(Professor::getNome)
-                            .collect(Collectors.toList()),
-                    savedBanca.getDataHoraApresentacao()
-            ));
-        } else {
-            ApresentacaoFail response = new ApresentacaoFail(savedBanca.getId(), savedBanca.getTitulo(), savedBanca.getIntegrante1(),
-                    savedBanca.getIntegrante2(), savedBanca.getIntegrante3(), savedBanca.getOrientador(),
-                    savedBanca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
-                    "data da apresentacao ainda nao foi marcada");
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        return ResponseEntity.ok().body(savedBanca);
     }
 
 

@@ -15,18 +15,20 @@ public class Apresentacao {
     private Long professor1Id;
     private Long professor2Id;
     private Long professor3Id;
+    private Long orientadorId;
     private LocalDateTime dataHora;
 
     public Apresentacao() {
     }
 
-    public Apresentacao(Long bancaId, Long professor1Id, Long professor2Id, Long professor3Id, LocalDateTime dataHora) {
+    public Apresentacao(Long bancaId, Long professor1Id, Long professor2Id, Long orientadorId, LocalDateTime dataHora) {
         this.bancaId = bancaId;
         this.professor1Id = professor1Id;
         this.professor2Id = professor2Id;
-        this.professor3Id = professor3Id;
+        this.orientadorId = orientadorId;
         this.dataHora = dataHora;
     }
+
     public Long getId() {
         return id;
     }
@@ -65,6 +67,14 @@ public class Apresentacao {
 
     public void setProfessor3Id(Long professor3Id) {
         this.professor3Id = professor3Id;
+    }
+
+    public Long getOrientadorId() {
+        return orientadorId;
+    }
+
+    public void setOrientadorId(Long orientadorId) {
+        this.orientadorId = orientadorId;
     }
 
     public LocalDateTime getDataHora() {
