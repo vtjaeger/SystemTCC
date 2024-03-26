@@ -38,7 +38,7 @@ public class ApresentacaoController {
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante1(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante2(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante3(),
-                        bancaRepository.findById(apresentacao.getBancaId()).get().getOrientador(),
+                        bancaRepository.findById(apresentacao.getBancaId()).get().getOrientador().getNome(),
 
                         List.of(
                                 professorRepository.findById(apresentacao.getProfessor1Id()).get().getNome(),

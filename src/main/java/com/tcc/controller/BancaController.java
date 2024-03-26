@@ -83,7 +83,7 @@ public class BancaController {
                 .map(banca -> {
                     if (banca.getDataHoraApresentacao() == null) {
                         return new ApresentacaoBanca(banca.getId(), banca.getTitulo(), banca.getIntegrante1(),
-                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador(), null, null);
+                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador().getNome(), null, null);
                     } else {
                         List<String> nomesProfessores = banca.getProfessores().stream()
                                 .map(Professor::getNome)
@@ -94,7 +94,7 @@ public class BancaController {
                                 banca.getIntegrante1(),
                                 banca.getIntegrante2(),
                                 banca.getIntegrante3(),
-                                banca.getOrientador(),
+                                banca.getOrientador().getNome(),
                                 nomesProfessores,
                                 banca.getDataHoraApresentacao()
                         );
