@@ -14,5 +14,5 @@
 <ul>
     <li>Java</li>
     <li>Spring Boot</li>
-    <li>MySQL</li>
+    <li>Postgresql</li>
 </ul>
