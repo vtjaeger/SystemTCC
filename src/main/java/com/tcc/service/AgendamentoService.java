@@ -27,7 +27,7 @@ public class AgendamentoService {
     @Autowired
     BancaRepository bancaRepository;
 
-    public LocalDateTime  marcarData(Banca banca){
+    public LocalDateTime marcarData(Banca banca) {
         List<Professor> professores = banca.getProfessores();
 
         List<List<LocalDateTime>> horariosOrdenadosProfessores = new ArrayList<>();
@@ -54,48 +54,37 @@ public class AgendamentoService {
         if (!horariosEmComum.isEmpty()) {
             LocalDateTime dataMarcada = horariosEmComum.get(0);
 
-            if(apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).minusHours(1)) ||
-                    apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).plusHours(1))){
-                dataMarcada = null;
-
+            if (apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).minusHours(1)) ||
+                    apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).plusHours(1))) {
+                return null;
             } else {
                 salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), orientador,
                         horariosEmComum.get(0));
+                return dataMarcada;
             }
+        }
+        List<Professor> todosProfessores = professorRepository.findAll();
 
-            return dataMarcada;
-        } else {
-            List<Professor> todosProfessores = professorRepository.findAll();
+        LocalDateTime horarioInicio = LocalDateTime.of(2024, 3, 22, 0, 0);
+        LocalDateTime horarioFinal = LocalDateTime.of(2024, 3, 31, 0, 0);
 
-            LocalDateTime horarioInicio = LocalDateTime.of(2024, 3, 22, 0, 0);
-            LocalDateTime horarioFinal = LocalDateTime.of(2024, 3, 31, 0, 0);
+        for (LocalDateTime horario = horarioInicio; horario.isBefore(horarioFinal); horario = horario.plusHours(1)) {
+            List<Professor> professoresComHorariosIguais = new ArrayList<>();
 
-            for(LocalDateTime horario = horarioInicio; horario.isBefore(horarioFinal); horario = horario.plusHours(1)){
-                List<Professor> professoresComHorariosIguais = new ArrayList<>();
+            for (Professor professor : todosProfessores) {
 
-                for(Professor professor : todosProfessores){
+                if (orientador.getHorariosDisponiveis().contains(horario) && professor.getHorariosDisponiveis().contains(horario)
+                        && !apresentacaoRepository.existsByDataHora(horario.minusHours(1)) &&
+                        !apresentacaoRepository.existsByDataHora(horario.plusHours(1)) &&
+                        !apresentacaoRepository.existsByDataHora(horario)) {
 
-                    if(orientador.getHorariosDisponiveis().contains(horario)){
-                        if(professor.getHorariosDisponiveis().contains(horario)){
+                    professoresComHorariosIguais.add(professor);
+                }
 
-                            if (apresentacaoRepository.existsByDataHora(horario.minusHours(1)) ||
-                                    apresentacaoRepository.existsByDataHora(horario.plusHours(1))) {
-                                break;
-                            } else {
-                                professoresComHorariosIguais.add(professor);
-                            }
-                        }
-
-                        if(professoresComHorariosIguais.size() >= 3){
-                            if(!apresentacaoRepository.existsByBancaId(banca.getId()) &&
-                                    !apresentacaoRepository.existsByDataHora(horario)){
-
-                                salvarApresentacao(banca.getId(), professoresComHorariosIguais.get(0),
-                                        professoresComHorariosIguais.get(1), orientador,
-                                        horario);
-                            }
-                        }
-                    }
+                if (professoresComHorariosIguais.size() >= 3 && !apresentacaoRepository.existsByBancaId(banca.getId())) {
+                    salvarApresentacao(banca.getId(), professoresComHorariosIguais.get(0),
+                            professoresComHorariosIguais.get(1), orientador, horario);
+                    return horario;
                 }
             }
         }
@@ -104,7 +93,7 @@ public class AgendamentoService {
 
     public List<LocalDateTime> encontrarHorariosEmComumProfessoresDaBanca(List<LocalDateTime> horariosP1,
                                                                           List<LocalDateTime> horariosP2,
-                                                                          List<LocalDateTime> horariosOrientador){
+                                                                          List<LocalDateTime> horariosOrientador) {
         List<LocalDateTime> horarios1 = horariosP1;
         List<LocalDateTime> horarios2 = horariosP2;
         List<LocalDateTime> horarios3 = horariosOrientador;
