@@ -1,9 +1,10 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.response.ApresentacaoBanca;
+import com.tcc.dtos.response.apresentacao.ApresentacaoBanca;
 import com.tcc.models.Banca;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
+import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.service.AgendamentoService;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,8 @@ public class ApresentacaoController {
     BancaRepository bancaRepository;
     @Autowired
     AgendamentoService agendamentoService;
+    @Autowired
+    CoordenadorRepository coordenadorRepository;
 
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getApresentacoes() {

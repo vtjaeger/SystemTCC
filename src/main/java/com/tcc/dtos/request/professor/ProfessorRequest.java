@@ -1,4 +1,4 @@
-package com.tcc.dtos.request;
+package com.tcc.dtos.request.professor;
 
 import jakarta.validation.constraints.NotNull;
 

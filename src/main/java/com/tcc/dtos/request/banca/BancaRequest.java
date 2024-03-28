@@ -1,4 +1,4 @@
-package com.tcc.dtos.request;
+package com.tcc.dtos.request.banca;
 
 import com.tcc.models.Professor;
 import jakarta.validation.constraints.NotBlank;

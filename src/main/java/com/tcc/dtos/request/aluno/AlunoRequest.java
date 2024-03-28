@@ -1,4 +1,4 @@
-package com.tcc.dtos.request;
+package com.tcc.dtos.request.aluno;
 
 import jakarta.validation.constraints.NotBlank;
 

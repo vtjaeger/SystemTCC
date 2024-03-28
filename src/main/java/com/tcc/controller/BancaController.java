@@ -1,12 +1,10 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.request.BancaRequest;
-import com.tcc.dtos.response.ApresentacaoBanca;
-import com.tcc.dtos.response.ApresentacaoFail;
+import com.tcc.dtos.request.banca.BancaRequest;
+import com.tcc.dtos.response.apresentacao.ApresentacaoBanca;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
 import com.tcc.repository.AlunoRepository;
-import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.service.AgendamentoService;
@@ -17,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,16 +75,19 @@ public class BancaController {
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getAllBancas() {
         List<Banca> bancas = bancaRepository.findAll();
-
         List<ApresentacaoBanca> responseList = bancas.stream()
                 .map(banca -> {
+
                     if (banca.getDataHoraApresentacao() == null) {
                         return new ApresentacaoBanca(banca.getId(), banca.getTitulo(), banca.getIntegrante1(),
-                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador().getNome(), null, null);
+                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador().getNome(),
+                                null, null);
+
                     } else {
                         List<String> nomesProfessores = banca.getProfessores().stream()
                                 .map(Professor::getNome)
                                 .collect(Collectors.toList());
+
                         return new ApresentacaoBanca(
                                 banca.getId(),
                                 banca.getTitulo(),

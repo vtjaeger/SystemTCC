@@ -90,10 +90,6 @@ public class Banca {
         this.integrante3 = integrante3;
     }
 
-    public List<Professor> getProfessores() {
-        return professores;
-    }
-
     public LocalDateTime getDataHoraApresentacao() {
         return dataHoraApresentacao;
     }
@@ -108,6 +104,10 @@ public class Banca {
 
     public void setOrientador(Professor orientador) {
         this.orientador = orientador;
+    }
+
+    public List<Professor> getProfessores() {
+        return professores;
     }
 
     public void setProfessores(List<Professor> professores) {

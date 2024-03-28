@@ -1,4 +1,4 @@
-package com.tcc.dtos.response;
+package com.tcc.dtos.response.apresentacao;
 
 import com.tcc.models.Professor;
 import com.tcc.repository.ProfessorRepository;

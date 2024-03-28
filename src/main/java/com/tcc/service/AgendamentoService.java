@@ -2,20 +2,19 @@ package com.tcc.service;
 
 import com.tcc.models.Apresentacao;
 import com.tcc.models.Banca;
+import com.tcc.models.Coordenador;
 import com.tcc.models.Professor;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
+import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +25,8 @@ public class AgendamentoService {
     ProfessorRepository professorRepository;
     @Autowired
     BancaRepository bancaRepository;
+    @Autowired
+    CoordenadorRepository coordenadorRepository;
 
     public LocalDateTime marcarData(Banca banca) {
         List<Professor> professores = banca.getProfessores();
@@ -47,31 +48,45 @@ public class AgendamentoService {
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
 
-
         List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(horariosOrdenadosProfessores.get(0),
                 horariosOrdenadosProfessores.get(0), horariosOrdenadosOrientador);
 
-        if (!horariosEmComum.isEmpty()) {
-            LocalDateTime dataMarcada = horariosEmComum.get(0);
 
-            if (apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).minusHours(1)) ||
-                    apresentacaoRepository.existsByDataHora(horariosEmComum.get(0).plusHours(1))) {
-                return null;
-            } else {
-                salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), orientador,
-                        horariosEmComum.get(0));
-                return dataMarcada;
+        if (!horariosEmComum.isEmpty()) {
+            for (LocalDateTime horario : horariosEmComum) {
+
+                if (!apresentacaoRepository.existsByDataHora(horario) ||
+                        !apresentacaoRepository.existsByDataHora(horario.minusHours(1)) ||
+                        !apresentacaoRepository.existsByDataHora(horario.plusHours(1)))
+
+                    salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), orientador,
+                            horario);
+
+                return horario;
             }
+            return null;
         }
+
         List<Professor> todosProfessores = professorRepository.findAll();
 
-        LocalDateTime horarioInicio = LocalDateTime.of(2024, 3, 22, 0, 0);
-        LocalDateTime horarioFinal = LocalDateTime.of(2024, 3, 31, 0, 0);
+        List<Coordenador> coordenadores = coordenadorRepository.findAll().stream()
+                .sorted(Comparator.comparing(Coordenador::getId))
+                .collect(Collectors.toList());
 
-        for (LocalDateTime horario = horarioInicio; horario.isBefore(horarioFinal); horario = horario.plusHours(1)) {
-            List<Professor> professoresComHorariosIguais = new ArrayList<>();
+        var coordenador = coordenadores.get(0);
+        System.out.println(coordenador);
+
+        LocalDateTime horaInicio = coordenador.getDataInicio();
+        LocalDateTime horaFinal = coordenador.getDataFinal();
+
+
+        List<Professor> professoresComHorariosIguais = new ArrayList<>();
+
+        for (LocalDateTime horario = horaInicio; horario.isBefore(horaFinal) ||
+                horario.equals(horaFinal); horario = horario.plusHours(1)) {
 
             for (Professor professor : todosProfessores) {
+
 
                 if (orientador.getHorariosDisponiveis().contains(horario) && professor.getHorariosDisponiveis().contains(horario)
                         && !apresentacaoRepository.existsByDataHora(horario.minusHours(1)) &&
