@@ -7,6 +7,8 @@ import com.tcc.repository.BancaRepository;
 import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.service.AgendamentoService;
+import com.tcc.service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ public class ApresentacaoController {
     AgendamentoService agendamentoService;
     @Autowired
     CoordenadorRepository coordenadorRepository;
+    @Autowired
+    EmailService emailService;
 
     @GetMapping
     public ResponseEntity<List<ApresentacaoBanca>> getApresentacoes() {
@@ -59,6 +63,17 @@ public class ApresentacaoController {
 
         for (Banca banca : bancas) {
             agendamentoService.marcarData(banca);
+            String para = banca.getOrientador().getNome();
+            String assunto = "Horario marcado para a banca: " + banca.getTitulo();
+            String texto = "Alunos: \n" +
+                    banca.getIntegrante1() + ", " + banca.getIntegrante2() + ", " + banca.getIntegrante3() + "\n" +
+                    "Horario: " + banca.getDataHoraApresentacao();
+
+            try {
+                emailService.enviarEmail("viniciustjaeger@gmail.com", assunto, texto);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return ResponseEntity.ok().body(bancas);
