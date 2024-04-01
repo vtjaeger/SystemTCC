@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,7 +100,7 @@ public class BancaController {
                                 banca.getIntegrante3(),
                                 banca.getOrientador().getNome(),
                                 nomesProfessores,
-                                banca.getDataHoraApresentacao()
+                                banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                         );
 
                     }

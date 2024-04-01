@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,9 +52,10 @@ public class ApresentacaoController {
                                 professorRepository.findById(apresentacao.getProfessor1Id()).get().getNome(),
                                 professorRepository.findById(apresentacao.getProfessor2Id()).get().getNome()
                         ),
-                        apresentacao.getDataHora()
+                        apresentacao.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                 ))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok().body(responseList);
     }
 
@@ -66,8 +68,8 @@ public class ApresentacaoController {
             String para = banca.getOrientador().getNome();
             String assunto = "Horario marcado para a banca: " + banca.getTitulo();
             String texto = "Alunos: \n" +
-                    banca.getIntegrante1() + ", " + banca.getIntegrante2() + ", " + banca.getIntegrante3() + "\n" +
-                    "Horario: " + banca.getDataHoraApresentacao();
+                    banca.getIntegrante1() + ", " + banca.getIntegrante2() + ", " + banca.getIntegrante3() + "\n\n" +
+                    "Horario: " + banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
             try {
                 emailService.enviarEmail("viniciustjaeger@gmail.com", assunto, texto);

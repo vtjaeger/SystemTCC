@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +40,7 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity getProfessores(){
         var professores = professorRepository.findAll();
+
         return ResponseEntity.ok().body(professores);
     }
 
