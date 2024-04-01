@@ -7,15 +7,11 @@ import com.tcc.models.Professor;
 import com.tcc.repository.AlunoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
-import com.tcc.service.AgendamentoService;
-import com.tcc.service.EmailService;
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
@@ -34,8 +30,6 @@ public class BancaController {
     AlunoRepository alunoRepository;
     @Autowired
     ProfessorRepository professorRepository;
-    @Autowired
-    AgendamentoService agendamentoService;
 
     @PostMapping
     public ResponseEntity cadastrarBanca(@RequestBody @Valid BancaRequest bancaRequest) {

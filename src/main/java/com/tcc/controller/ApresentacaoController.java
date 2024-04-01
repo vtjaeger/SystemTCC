@@ -4,7 +4,6 @@ import com.tcc.dtos.response.apresentacao.ApresentacaoBanca;
 import com.tcc.models.Banca;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
-import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.service.AgendamentoService;
 import com.tcc.service.EmailService;
@@ -32,8 +31,6 @@ public class ApresentacaoController {
     BancaRepository bancaRepository;
     @Autowired
     AgendamentoService agendamentoService;
-    @Autowired
-    CoordenadorRepository coordenadorRepository;
     @Autowired
     EmailService emailService;
 
@@ -69,7 +66,7 @@ public class ApresentacaoController {
             String assunto = "Horario marcado para a banca: " + banca.getTitulo();
             String texto = "Alunos: \n" +
                     banca.getIntegrante1() + ", " + banca.getIntegrante2() + ", " + banca.getIntegrante3() + "\n\n" +
-                    "Horario: " + banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                    "Data e hora: " + banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
             try {
                 emailService.enviarEmail("viniciustjaeger@gmail.com", assunto, texto);

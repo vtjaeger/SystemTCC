@@ -1,6 +1,5 @@
 package com.tcc.service;
 
-import com.tcc.dtos.request.email.EmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;

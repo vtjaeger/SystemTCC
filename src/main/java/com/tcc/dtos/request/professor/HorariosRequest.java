@@ -1,7 +1,6 @@
 package com.tcc.dtos.request.professor;
 
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
