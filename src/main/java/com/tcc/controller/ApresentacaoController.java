@@ -2,6 +2,7 @@ package com.tcc.controller;
 
 import com.tcc.dtos.response.apresentacao.ApresentacaoBanca;
 import com.tcc.models.Banca;
+import com.tcc.models.Professor;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,22 +61,35 @@ public class ApresentacaoController {
     @GetMapping("/marcar")
     public ResponseEntity marcarDatas() {
         List<Banca> bancas = bancaRepository.findAll();
+        List<ApresentacaoBanca> response = new ArrayList<>();
 
         for (Banca banca : bancas) {
             agendamentoService.marcarData(banca);
-            String para = banca.getOrientador().getNome();
-            String assunto = "Horario marcado para a banca: " + banca.getTitulo();
-            String texto = "Alunos: \n" +
-                    banca.getIntegrante1() + ", " + banca.getIntegrante2() + ", " + banca.getIntegrante3() + "\n\n" +
-                    "Data e hora: " + banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+//            String para = banca.getOrientador().getNome();
+//            String assunto = "Horario marcado para a banca: " + banca.getTitulo();
+//            String texto = "Alunos: \n" +
+//                    banca.getIntegrante1() + ", " + banca.getIntegrante2() + ", " + banca.getIntegrante3() + "\n\n" +
+//                    "Data e hora: " + banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+//
+//            try {
+//                emailService.enviarEmail("viniciustjaeger@gmail.com", assunto, texto);
+//            } catch (MessagingException e) {
+//                throw new RuntimeException(e);
+//            }
 
-            try {
-                emailService.enviarEmail("viniciustjaeger@gmail.com", assunto, texto);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
+            var apresentacao = new ApresentacaoBanca(
+                    banca.getId(),
+                    banca.getTitulo(),
+                    banca.getIntegrante1(),
+                    banca.getIntegrante2(),
+                    banca.getIntegrante3(),
+                    banca.getOrientador().getNome(),
+                    banca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
+                    banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+            );
+            response.add(apresentacao);
         }
 
-        return ResponseEntity.ok().body(bancas);
+        return ResponseEntity.ok().body(response);
     }
 }

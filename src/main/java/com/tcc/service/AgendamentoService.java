@@ -31,6 +31,7 @@ public class AgendamentoService {
     public LocalDateTime marcarData(Banca banca) {
         List<Professor> professores = banca.getProfessores();
 
+        //lista com objetos do tipo list<localdatetime> = cada professor tem uma lista de horarios
         List<List<LocalDateTime>> horariosOrdenadosProfessores = new ArrayList<>();
 
         for (Professor professorBanca : professores) {
@@ -49,7 +50,7 @@ public class AgendamentoService {
                 .collect(Collectors.toList());
 
         List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(horariosOrdenadosProfessores.get(0),
-                horariosOrdenadosProfessores.get(0), horariosOrdenadosOrientador);
+                horariosOrdenadosProfessores.get(1), horariosOrdenadosOrientador);
 
 
         if (!horariosEmComum.isEmpty()) {
@@ -74,11 +75,9 @@ public class AgendamentoService {
                 .collect(Collectors.toList());
 
         var coordenador = coordenadores.get(0);
-        System.out.println(coordenador);
 
         LocalDateTime horaInicio = coordenador.getDataInicio();
         LocalDateTime horaFinal = coordenador.getDataFinal();
-
 
         List<Professor> professoresComHorariosIguais = new ArrayList<>();
 
