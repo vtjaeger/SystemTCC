@@ -1,12 +1,12 @@
 package com.tcc.service;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.tcc.dtos.response.apresentacao.ApresentacaoBanca;
 import com.tcc.models.Banca;
 import com.tcc.models.Professor;
 import com.tcc.repository.ApresentacaoRepository;
 import com.tcc.repository.BancaRepository;
 import com.tcc.repository.ProfessorRepository;
+import com.tcc.service.extras.AgendamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

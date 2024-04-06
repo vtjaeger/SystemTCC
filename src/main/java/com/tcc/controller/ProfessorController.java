@@ -6,6 +6,7 @@ import com.tcc.models.Coordenador;
 import com.tcc.models.Professor;
 import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
+import com.tcc.service.ProfessorService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,64 +25,26 @@ import java.util.stream.Collectors;
 @Transactional
 public class ProfessorController {
     @Autowired
-    ProfessorRepository professorRepository;
-    @Autowired
-    CoordenadorRepository coordenadorRepository;
+    ProfessorService professorService;
 
     @PostMapping
-    public ResponseEntity cadastrarProfessor(@RequestBody @Valid ProfessorRequest professorRequest){
-        var novoProfessor = new Professor(professorRequest);
-
-        return ResponseEntity.ok().body(professorRepository.save(novoProfessor));
+    public ResponseEntity registerProfessor(@RequestBody @Valid ProfessorRequest professorRequest){
+        return professorService.registerProfessor(professorRequest);
     }
 
     @GetMapping
     public ResponseEntity getProfessores(){
-        var professores = professorRepository.findAll();
-
-        return ResponseEntity.ok().body(professores);
+        return professorService.getAllProfessores();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneProfessor(@PathVariable(value = "id") Long id){
-        var professor = professorRepository.findById(id);
-        if(professor.isPresent()){
-            return ResponseEntity.ok().body(professor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return professorService.getOneProfessor(id);
     }
 
     @PostMapping("/{id}/horarios")
-    public ResponseEntity horariosDisponiveis(@PathVariable(value = "id") Long id,
-                                              @RequestBody @Valid HorariosRequest horariosRequest){
-
-        List<Coordenador> coordenadores = coordenadorRepository.findAll()
-                .stream().sorted(Comparator.comparing(Coordenador::getId))
-                .collect(Collectors.toList());
-
-        var coordenador = coordenadores.get(0);
-
-        if(horariosRequest.getDateTime().isBefore(coordenador.getDataInicio()) || horariosRequest.getDateTime().isAfter(coordenador.getDataFinal())){
-            return ResponseEntity.badRequest().body("horario indisponivel");
-        }
-
-        Optional<Professor> professorOptional = professorRepository.findById(id);
-        if(professorOptional.isPresent()){
-            Professor professor = professorOptional.get();
-
-            LocalDateTime novoHorario = horariosRequest.getDateTime();
-
-            if(professor.getHorariosDisponiveis().contains(novoHorario)){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("horario ja cadastrado");
-            }
-
-            professor.adicionarDisponibilidade(novoHorario);
-
-            professorRepository.save(professor);
-            return ResponseEntity.ok().body("ok");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity setAvailableTimes(@PathVariable(value = "id") Long id,
+                                              @RequestBody @Valid HorariosRequest horariosRequest) {
+        return professorService.setAvailableTimes(id, horariosRequest);
     }
 }

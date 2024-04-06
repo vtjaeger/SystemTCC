@@ -1,4 +1,4 @@
-package com.tcc.service;
+package com.tcc.service.extras;
 
 import com.tcc.models.Apresentacao;
 import com.tcc.models.Banca;

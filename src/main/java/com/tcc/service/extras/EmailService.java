@@ -1,4 +1,4 @@
-package com.tcc.service;
+package com.tcc.service.extras;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
