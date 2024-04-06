@@ -5,6 +5,7 @@ import com.tcc.dtos.request.coordenador.CoordenadorRequest;
 import com.tcc.dtos.request.coordenador.DataInicio;
 import com.tcc.models.Coordenador;
 import com.tcc.repository.CoordenadorRepository;
+import com.tcc.service.CoordenadorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,51 +19,25 @@ import java.util.Optional;
 @RequestMapping("/coordenadores")
 public class CoordenadorController {
     @Autowired
-    CoordenadorRepository coordenadorRepository;
+    CoordenadorService coordenadorService;
 
     @PostMapping
     public ResponseEntity cadastrarCoordenador(@RequestBody @Valid CoordenadorRequest coordenadorRequest){
-        var novoCoordenador = new Coordenador(coordenadorRequest);
-        var savedCoordenador = coordenadorRepository.save(novoCoordenador);
-        return ResponseEntity.ok().body(savedCoordenador);
+        return coordenadorService.registerCoordenador(coordenadorRequest);
     }
 
     @GetMapping
     public ResponseEntity getCoordenadores(){
-        List<Coordenador> coordenadores = coordenadorRepository.findAll();
-        return ResponseEntity.ok().body(coordenadores);
+        return coordenadorService.getAllCoordenadores();
     }
 
     @PostMapping("/{id}/definir-inicio")
     public ResponseEntity definirDataInicio(@PathVariable(value = "id") Long id, @RequestBody DataInicio dataInicio) {
-        LocalDateTime dataHoraInicio = dataInicio.getDateTime();
-
-        Optional<Coordenador> optionalCoordenador = coordenadorRepository.findById(id);
-
-        if (optionalCoordenador.isPresent()) {
-            Coordenador coordenador = optionalCoordenador.get();
-            coordenador.setDataInicio(dataHoraInicio);
-            coordenadorRepository.save(coordenador);
-            return ResponseEntity.ok().body("salvo");
-
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return coordenadorService.setStartDate(id, dataInicio);
     }
 
     @PostMapping("/{id}/definir-final")
     public ResponseEntity definirDataFinal(@PathVariable(value = "id") Long id, @RequestBody DataFinal dataFinal) {
-        LocalDateTime dataHoraFinal = dataFinal.getDateTime();
-
-        Optional<Coordenador> optionalCoordenador = coordenadorRepository.findById(id);
-
-        if (optionalCoordenador.isPresent()) {
-            Coordenador coordenador = optionalCoordenador.get();
-            coordenador.setDataFinal(dataHoraFinal);
-            coordenadorRepository.save(coordenador);
-            return ResponseEntity.ok().body("salvo");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return coordenadorService.setFinalDate(id, dataFinal);
     }
 }

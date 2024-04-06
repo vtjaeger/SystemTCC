@@ -10,12 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Service
 public class AlunoService {
     @Autowired
-    AlunoRepository alunoRepository;
+    private AlunoRepository alunoRepository;
 
-    public ResponseEntity<Aluno> cadastrarAluno(@RequestBody @Valid AlunoRequest alunoRequest){
+    public ResponseEntity<Aluno> registerAluno(@RequestBody @Valid AlunoRequest alunoRequest){
         var aluno = new Aluno(alunoRequest);
 
         if(!alunoRepository.existsByNome(aluno.getNome())){
@@ -23,5 +25,10 @@ public class AlunoService {
             return ResponseEntity.ok().body(alunoRepository.save(aluno));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    public ResponseEntity getAllAlunos(){
+        List<Aluno> alunos = alunoRepository.findAll();
+        return ResponseEntity.ok().body(alunos);
     }
 }
