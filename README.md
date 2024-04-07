@@ -10,7 +10,7 @@
     <h1>Projeto de Agendamento de Apresentações de TCC</h1>
     <h3>Projeto Back-End</h3>
     <p>Este é um projeto que oferece um sistema de agendamento de apresentações de Trabalhos de Conclusão de Curso. 
-    Ele permite que professores, coordenadores e orientadores de TCC possam marcar datas para as apresentações dos alunos.</p>
+    Ele permite que professores, coordenadores e orientadores de TCC possam marcar de forma automática datas para as apresentações dos trabalhos dos alunos.</p>
     <p>Projeto Back End desenvolvido independente durante o primeiro semestre de Ciência da Computação. Intuito de aprofundar mais os conhecimentos na linguagem Java, framework Spring Boot, 
     modelagem e interação com Banco de Dados, Arquitetura de projetos, métodos HTTP, API REST e resolução de problemas reais.</p>
     <h2>Funcionalidades</h2>
