@@ -86,7 +86,6 @@ public class AgendamentoService {
 
             for (Professor professor : todosProfessores) {
 
-
                 if (orientador.getHorariosDisponiveis().contains(horario) && professor.getHorariosDisponiveis().contains(horario)
                         && !apresentacaoRepository.existsByDataHora(horario.minusHours(1)) &&
                         !apresentacaoRepository.existsByDataHora(horario.plusHours(1)) &&
@@ -126,10 +125,13 @@ public class AgendamentoService {
                                     Professor orientador, LocalDateTime horario) {
         Apresentacao apresentacao = new Apresentacao(bancaId, professor1.getId(), professor2.getId(),
                 orientador.getId(), horario);
-        apresentacaoRepository.save(apresentacao);
 
-        Banca banca = bancaRepository.findById(bancaId).orElseThrow();
-        banca.setDataHoraApresentacao(horario);
-        bancaRepository.save(banca);
+        if(!apresentacaoRepository.existsByBancaId(bancaId)){
+            apresentacaoRepository.save(apresentacao);
+
+            Banca banca = bancaRepository.findById(bancaId).orElseThrow();
+            banca.setDataHoraApresentacao(horario);
+            bancaRepository.save(banca);
+        }
     }
 }
