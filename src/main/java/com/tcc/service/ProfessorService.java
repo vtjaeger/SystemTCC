@@ -46,9 +46,14 @@ public class ProfessorService {
     }
 
     public ResponseEntity setAvailableTimes(Long id, HorariosRequest horariosRequest){
+
         List<Coordenador> coordenadores = coordenadorRepository.findAll()
                 .stream().sorted(Comparator.comparing(Coordenador::getId))
                 .collect(Collectors.toList());
+
+        if(coordenadores.isEmpty()){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Sem coordenadores cadastrados ainda.");
+        }
 
         var coordenador = coordenadores.get(0);
 

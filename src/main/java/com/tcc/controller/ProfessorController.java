@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/professor")
-@Transactional
+@CrossOrigin(origins = "*")
 public class ProfessorController {
     @Autowired
     ProfessorService professorService;

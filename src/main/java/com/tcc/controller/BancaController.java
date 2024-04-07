@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/banca")
-@Transactional
+@CrossOrigin(origins = "*")
 public class BancaController {
     @Autowired
     BancaService bancaService;

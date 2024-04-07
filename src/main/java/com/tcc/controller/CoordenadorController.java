@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/coordenadores")
+@CrossOrigin(origins = "*")
 public class CoordenadorController {
     @Autowired
     CoordenadorService coordenadorService;

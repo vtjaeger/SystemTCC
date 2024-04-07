@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "tb_banca")
 public class Banca {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
     private String integrante1;

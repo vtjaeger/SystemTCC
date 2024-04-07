@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/aluno")
-@Transactional
+@CrossOrigin(origins = "*")
 public class AlunoController {
     @Autowired
     AlunoService alunoService;
