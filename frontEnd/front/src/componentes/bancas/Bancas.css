@@ -1,0 +1,26 @@
+.bancas-container {
+    margin: 20px;
+}
+
+.bancas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.banca-card {
+    background-color: #dfdfdfb2;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(156, 91, 91, 0.1);
+    padding: 20px;
+}
+
+.banca-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.banca-card p {
+    margin: 0;
+}

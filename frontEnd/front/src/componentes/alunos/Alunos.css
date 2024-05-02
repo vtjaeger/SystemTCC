@@ -1,0 +1,36 @@
+/* Estilo para o container dos alunos */
+.alunos-container {
+    margin: 10px;
+}
+
+/* Estilo para o título dos alunos */
+.alunos-container h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para o grid de alunos */
+.alunos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+/* Estilo para o card de cada aluno */
+.aluno-card {
+    background-color: #b6b6b6;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Estilo para o nome do aluno */
+.aluno-card p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Estilo para o ID do aluno */
+.aluno-card p strong {
+    font-weight: bold;
+}
