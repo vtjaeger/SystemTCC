@@ -5,6 +5,8 @@ import { Bancas } from './componentes/bancas/Bancas';
 import { Alunos } from './componentes/alunos/Alunos';
 import { AdicionarBanca } from './componentes/adicionarBanca/AdicionarBanca';
 import {AdicionarAluno} from './componentes/adicionarAluno/AdicionarAluno'
+import { AdicionarProfessor } from './componentes/adicionarProfessor/AdicionarProfessor';
+import { Professores } from './componentes/professores/Professores';
 
 function App() {
   return (
@@ -13,8 +15,10 @@ function App() {
       <Switch>
         <Route path="/" exact component={Bancas} />
         <Route path="/alunos" component={Alunos} />
+        <Route path='/professor' component={Professores}></Route>
         <Route path="/adicionarBanca" component={AdicionarBanca} />
         <Route path="/adicionarAluno" component={AdicionarAluno} />
+        <Route path='/adicionarProfessor' component={AdicionarProfessor}/>
       </Switch>
     </BrowserRouter>
   );

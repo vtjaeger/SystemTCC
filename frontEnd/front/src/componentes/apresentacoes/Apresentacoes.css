@@ -1,0 +1,36 @@
+/* Estilo para o container das apresentações */
+.apresentacoes-container {
+    margin: 10px;
+}
+
+/* Estilo para o título das apresentações */
+.apresentacoes-container h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para o grid de apresentações */
+.apresentacoes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+/* Estilo para o card de cada apresentação */
+.apresentacao-card {
+    background-color: #b6b6b698;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Estilo para os detalhes da apresentação */
+.apresentacao-card p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* Estilo para os títulos dos detalhes da apresentação */
+.apresentacao-card p strong {
+    font-weight: bold;
+}

@@ -1,0 +1,32 @@
+.professor-container {
+    text-align: center;
+    margin: 20px;
+}
+
+.professor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.professor-card {
+    background-color: #b6b6b698;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(156, 91, 91, 0.1);
+    padding: 20px;
+}
+
+.professor-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.professor-card p {
+    margin: 0;
+}
+
+.divBtns {
+    padding-top: 20px;
+    text-align: center;
+}

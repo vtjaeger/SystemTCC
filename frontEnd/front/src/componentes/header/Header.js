@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Importe o Link do React Router
 import './Header.css';
 
 export const Header = () => {
@@ -7,9 +8,9 @@ export const Header = () => {
             <img src='unisinos.png' alt="Unisinos" className="logo"></img>
             <nav>
                 <ul className="menu">
-                    <li><a href="#">opcao 1</a></li>
-                    <li><a href="#">opcao2</a></li>
-                    <li><a href="#">opcao3</a></li>
+                    <li><Link to="/professor">Professores</Link></li>
+                    <li><a href="#">Coordenadores</a></li>
+                    <li><a href="#">Apresentacoes</a></li>
                 </ul>
             </nav>
         </header>
