@@ -19,12 +19,10 @@ public class AlunoService {
 
     public ResponseEntity<Aluno> registerAluno(@RequestBody @Valid AlunoRequest alunoRequest){
         var aluno = new Aluno(alunoRequest);
-
         if(!alunoRepository.existsByNome(aluno.getNome())){
-
-            return ResponseEntity.ok().body(alunoRepository.save(aluno));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok().body(alunoRepository.save(aluno));
     }
 
     public ResponseEntity getAllAlunos(){

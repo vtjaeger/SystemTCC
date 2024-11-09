@@ -1,7 +1,6 @@
 package com.tcc.service;
 
 import com.tcc.dtos.request.coordenador.CoordenadorRequest;
-import com.tcc.dtos.request.coordenador.DataFinal;
 import com.tcc.dtos.request.coordenador.DataInicio;
 import com.tcc.models.Coordenador;
 import com.tcc.repository.CoordenadorRepository;
@@ -37,7 +36,7 @@ public class CoordenadorService {
         return ResponseEntity.ok().body(coordenadores);
     }
 
-    public ResponseEntity setStartDate(@PathVariable(value = "id") Long id, @RequestBody DataInicio dto){
+    public ResponseEntity setDate(@PathVariable(value = "id") Long id, @RequestBody DataInicio dto){
         LocalDateTime dataInicio = dto.getDateTime();
         Optional<Coordenador> coordenadorOptional = coordenadorRepository.findById(id);
 
@@ -48,22 +47,7 @@ public class CoordenadorService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("horario inicial ja cadastrado");
             }
             coordenador.setDataInicio(dataInicio);
-            return ResponseEntity.ok().body(coordenadorRepository.save(coordenador));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("coordenador nao encontrado");
-    }
-
-    public ResponseEntity setFinalDate(@PathVariable(value = "id") Long id, @RequestBody DataFinal dto){
-        LocalDateTime dataFinal = dto.getDateTime();
-        Optional<Coordenador> coordenadorOptional = coordenadorRepository.findById(id);
-
-        if(coordenadorOptional.isPresent()){
-            var coordenador = coordenadorOptional.get();
-
-            if(coordenador.getDataFinal() != null){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("horario final ja cadastrado");
-            }
-            coordenador.setDataFinal(dataFinal);
+            coordenador.setDataFinal(dataInicio.plusMonths(6));
             return ResponseEntity.ok().body(coordenadorRepository.save(coordenador));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("coordenador nao encontrado");
