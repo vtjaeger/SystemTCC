@@ -74,7 +74,9 @@ public class ApresentacaoService {
                     banca.getIntegrante3(),
                     banca.getOrientador().getNome(),
                     banca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
-                    banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    banca.getDataHoraApresentacao() != null
+                            ? banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                            : "sem data definida"
             );
             response.add(apresentacao);
         }

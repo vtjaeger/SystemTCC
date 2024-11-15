@@ -30,79 +30,103 @@ public class AgendamentoService {
 
     public LocalDateTime marcarData(Banca banca) {
         List<Professor> professores = banca.getProfessores();
-        List<LocalDateTime> horariosEmComum = encontrarHorariosEmComum(banca);
+
+        //lista com objetos do tipo list<localdatetime> = cada professor tem uma lista de horarios
+        List<List<LocalDateTime>> horariosOrdenadosProfessores = new ArrayList<>();
+
+        for (Professor professorBanca : professores) {
+            List<LocalDateTime> horariosOrdenados = professorBanca.getHorariosDisponiveis()
+                    .stream()
+                    .sorted(Comparator.naturalOrder())
+                    .collect(Collectors.toList());
+            horariosOrdenadosProfessores.add(horariosOrdenados);
+        }
+
+        Professor orientador = banca.getOrientador();
+
+        List<LocalDateTime> horariosOrdenadosOrientador = banca.getOrientador().getHorariosDisponiveis()
+                .stream()
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toList());
+
+        List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(horariosOrdenadosProfessores.get(0),
+                horariosOrdenadosProfessores.get(1), horariosOrdenadosOrientador);
+
 
         if (!horariosEmComum.isEmpty()) {
-            return agendarPrimeiroHorarioDisponivel(banca, professores, horariosEmComum);
-        } else {
-            return buscarHorarioAlternativo(banca, professores, banca.getOrientador());
-        }
-    }
+            for (LocalDateTime horario : horariosEmComum) {
 
-    private LocalDateTime agendarPrimeiroHorarioDisponivel(Banca banca, List<Professor> professores, List<LocalDateTime> horariosEmComum) {
-        for (LocalDateTime horario : horariosEmComum) {
-            if (horarioDisponivel(horario)) {
-                salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), banca.getOrientador(), horario);
+                if (!apresentacaoRepository.existsByDataHora(horario) ||
+                        !apresentacaoRepository.existsByDataHora(horario.minusHours(1)) ||
+                        !apresentacaoRepository.existsByDataHora(horario.plusHours(1)))
+
+                    salvarApresentacao(banca.getId(), professores.get(0), professores.get(1), orientador,
+                            horario);
+
                 return horario;
             }
+            return null;
         }
-        return null;
-    }
 
-    private LocalDateTime buscarHorarioAlternativo(Banca banca, List<Professor> professores, Professor orientador) {
-        LocalDateTime horaInicio = coordenadorRepository.findAll().stream()
+        List<Professor> todosProfessores = professorRepository.findAll();
+
+        List<Coordenador> coordenadores = coordenadorRepository.findAll().stream()
                 .sorted(Comparator.comparing(Coordenador::getId))
-                .map(Coordenador::getDataInicio)
-                .findFirst()
-                .orElse(null);
+                .collect(Collectors.toList());
 
-        LocalDateTime horaFinal = horaInicio != null ? horaInicio.plusMonths(6) : null;
+        var coordenador = coordenadores.get(0);
 
-        if (horaInicio == null || horaFinal == null) return null;
+        LocalDateTime horaInicio = coordenador.getDataInicio();
+        LocalDateTime horaFinal = coordenador.getDataFinal();
 
-        for (LocalDateTime horario = horaInicio; !horario.isAfter(horaFinal); horario = horario.plusHours(1)) {
-            List<Professor> professoresDisponiveis = encontrarProfessoresDisponiveisNoHorario(horario, orientador);
+        List<Professor> professoresComHorariosIguais = new ArrayList<>();
 
-            if (professoresDisponiveis.size() >= 3 && horarioDisponivel(horario)) {
-                salvarApresentacao(banca.getId(), professoresDisponiveis.get(0), professoresDisponiveis.get(1), orientador, horario);
-                return horario;
+        for (LocalDateTime horario = horaInicio; horario.isBefore(horaFinal) ||
+                horario.equals(horaFinal); horario = horario.plusHours(1)) {
+
+            for (Professor professor : todosProfessores) {
+
+                if (orientador.getHorariosDisponiveis().contains(horario) && professor.getHorariosDisponiveis().contains(horario)
+                        && !apresentacaoRepository.existsByDataHora(horario.minusHours(1)) &&
+                        !apresentacaoRepository.existsByDataHora(horario.plusHours(1)) &&
+                        !apresentacaoRepository.existsByDataHora(horario)) {
+
+                    professoresComHorariosIguais.add(professor);
+                }
+
+                if (professoresComHorariosIguais.size() >= 3 && !apresentacaoRepository.existsByBancaId(banca.getId())) {
+                    salvarApresentacao(banca.getId(), professoresComHorariosIguais.get(0),
+                            professoresComHorariosIguais.get(1), orientador, horario);
+                    return horario;
+                }
             }
         }
         return null;
     }
 
-    private boolean horarioDisponivel(LocalDateTime horario) {
-        return !apresentacaoRepository.existsByDataHora(horario.minusHours(1))
-                && !apresentacaoRepository.existsByDataHora(horario)
-                && !apresentacaoRepository.existsByDataHora(horario.plusHours(1));
+    public List<LocalDateTime> encontrarHorariosEmComumProfessoresDaBanca(List<LocalDateTime> horariosP1,
+                                                                          List<LocalDateTime> horariosP2,
+                                                                          List<LocalDateTime> horariosOrientador) {
+        List<LocalDateTime> horarios1 = horariosP1;
+        List<LocalDateTime> horarios2 = horariosP2;
+        List<LocalDateTime> horarios3 = horariosOrientador;
+
+        List<LocalDateTime> horariosEmComum = new ArrayList<>(horarios1);
+        horariosEmComum.retainAll(horarios2);
+        horariosEmComum.retainAll(horarios3);
+
+        horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.minusHours(1)));
+        horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.plusHours(1)));
+        horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario));
+        return horariosEmComum;
     }
 
-    private List<Professor> encontrarProfessoresDisponiveisNoHorario(LocalDateTime horario, Professor orientador) {
-        return professorRepository.findAll().stream()
-                .filter(professor -> professor.getHorariosDisponiveis().contains(horario)
-                        && orientador.getHorariosDisponiveis().contains(horario))
-                .collect(Collectors.toList());
-    }
+    private void salvarApresentacao(Long bancaId, Professor professor1, Professor professor2,
+                                    Professor orientador, LocalDateTime horario) {
+        Apresentacao apresentacao = new Apresentacao(bancaId, professor1.getId(), professor2.getId(),
+                orientador.getId(), horario);
 
-    private List<LocalDateTime> encontrarHorariosEmComum(Banca banca) {
-        List<List<LocalDateTime>> horariosProfessores = banca.getProfessores().stream()
-                .map(professor -> professor.getHorariosDisponiveis().stream()
-                        .sorted()
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList());
-
-        List<LocalDateTime> horariosEmComum = new ArrayList<>(horariosProfessores.get(0));
-        horariosEmComum.retainAll(horariosProfessores.get(1));
-        horariosEmComum.retainAll(banca.getOrientador().getHorariosDisponiveis());
-
-        return horariosEmComum.stream()
-                .filter(this::horarioDisponivel)
-                .collect(Collectors.toList());
-    }
-
-    private void salvarApresentacao(Long bancaId, Professor professor1, Professor professor2, Professor orientador, LocalDateTime horario) {
-        if (!apresentacaoRepository.existsByBancaId(bancaId)) {
-            Apresentacao apresentacao = new Apresentacao(bancaId, professor1.getId(), professor2.getId(), orientador.getId(), horario);
+        if(!apresentacaoRepository.existsByBancaId(bancaId)){
             apresentacaoRepository.save(apresentacao);
 
             Banca banca = bancaRepository.findById(bancaId).orElseThrow();

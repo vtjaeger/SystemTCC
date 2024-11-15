@@ -29,9 +29,9 @@ public class BancaService {
     private ProfessorRepository professorRepository;
 
     public ResponseEntity registerBanca(@RequestBody @Valid BancaRequest bancaRequest){
-        if (!alunoRepository.existsByNome(bancaRequest.integrante1()) ||
-                !alunoRepository.existsByNome(bancaRequest.integrante2()) ||
-                !alunoRepository.existsByNome(bancaRequest.integrante3())) {
+        if (!alunoRepository.existsByNome(bancaRequest.integrante1().trim()) ||
+                !alunoRepository.existsByNome(bancaRequest.integrante2().trim()) ||
+                !alunoRepository.existsByNome(bancaRequest.integrante3().trim())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante nao encontrado");
         }
 
