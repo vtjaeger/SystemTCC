@@ -35,11 +35,11 @@ public class ApresentacaoService {
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante1(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante2(),
                         bancaRepository.findById(apresentacao.getBancaId()).get().getIntegrante3(),
-                        bancaRepository.findById(apresentacao.getBancaId()).get().getOrientador().getNome(),
+                        bancaRepository.findById(apresentacao.getBancaId()).get().getOrientador().getLogin(),
 
                         List.of(
-                                professorRepository.findById(apresentacao.getProfessor1Id()).get().getNome(),
-                                professorRepository.findById(apresentacao.getProfessor2Id()).get().getNome()
+                                professorRepository.findById(apresentacao.getProfessor1Id()).get().getLogin(),
+                                professorRepository.findById(apresentacao.getProfessor2Id()).get().getLogin()
                         ),
                         apresentacao.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                 ))
@@ -72,8 +72,8 @@ public class ApresentacaoService {
                     banca.getIntegrante1(),
                     banca.getIntegrante2(),
                     banca.getIntegrante3(),
-                    banca.getOrientador().getNome(),
-                    banca.getProfessores().stream().map(Professor::getNome).collect(Collectors.toList()),
+                    banca.getOrientador().getLogin(),
+                    banca.getProfessores().stream().map(Professor::getLogin).collect(Collectors.toList()),
                     banca.getDataHoraApresentacao() != null
                             ? banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                             : "sem data definida"

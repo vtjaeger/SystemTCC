@@ -1,6 +1,5 @@
 package com.tcc.models;
 
-import com.tcc.dtos.request.professor.ProfessorRequest;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -13,16 +12,17 @@ public class Professor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+    private String login;
     @ElementCollection
     private List<LocalDateTime> horariosDisponiveis;
-    public Professor(ProfessorRequest professorRequest) {
-        this.nome = professorRequest.nome();
-    }
 
-    public Professor(Long id, String nome) {
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Professor(Long id, String login) {
         this.id = id;
-        this.nome = nome;
+        this.login = login;
     }
 
     public Professor() {
@@ -36,12 +36,20 @@ public class Professor {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getLogin() {
+        return login;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<LocalDateTime> getHorariosDisponiveis() {
@@ -58,4 +66,5 @@ public class Professor {
         }
         horariosDisponiveis.add(datahora);
     }
+
 }

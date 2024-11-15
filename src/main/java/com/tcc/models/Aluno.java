@@ -1,6 +1,5 @@
 package com.tcc.models;
 
-import com.tcc.dtos.request.aluno.AlunoRequest;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,19 +8,18 @@ public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String nome;
+    private String login;
 
-    public Aluno(Long id, String nome) {
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Aluno(Long id, String login) {
         this.id = id;
-        this.nome = nome;
+        this.login = login;
     }
 
     public Aluno() {
-    }
-
-    public Aluno(AlunoRequest alunoRequest) {
-        this.nome = alunoRequest.nome();
     }
 
     public Long getId() {
@@ -32,11 +30,19 @@ public class Aluno {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getLogin() {
+        return login;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

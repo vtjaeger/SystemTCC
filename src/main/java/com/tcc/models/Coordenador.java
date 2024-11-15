@@ -1,6 +1,5 @@
 package com.tcc.models;
 
-import com.tcc.dtos.request.coordenador.CoordenadorRequest;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -11,20 +10,20 @@ public class Coordenador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+    private String login;
     private LocalDateTime dataInicio;
     private LocalDateTime dataFinal;
 
-    public Coordenador(Long id, String nome) {
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Coordenador(Long id, String login) {
         this.id = id;
-        this.nome = nome;
+        this.login = login;
     }
 
     public Coordenador() {
-    }
-
-    public Coordenador(CoordenadorRequest coordenadorRequest) {
-        this.nome = coordenadorRequest.nome();
     }
 
     public Long getId() {
@@ -35,12 +34,12 @@ public class Coordenador {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getLogin() {
+        return login;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public LocalDateTime getDataInicio() {
@@ -57,5 +56,13 @@ public class Coordenador {
 
     public void setDataFinal(LocalDateTime dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

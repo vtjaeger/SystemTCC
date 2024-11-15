@@ -1,18 +1,16 @@
 package com.tcc.service;
 
 import com.tcc.dtos.request.professor.HorariosRequest;
-import com.tcc.dtos.request.professor.ProfessorRequest;
+import com.tcc.dtos.response.professor.ProfessorResponse;
 import com.tcc.models.Coordenador;
 import com.tcc.models.Professor;
 import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -27,14 +25,16 @@ public class ProfessorService {
     @Autowired
     private CoordenadorRepository coordenadorRepository;
 
-    public ResponseEntity registerProfessor(@RequestBody @Valid ProfessorRequest professorRequest){
-        var novoProfessor = new Professor(professorRequest);
-        return ResponseEntity.ok().body(professorRepository.save(novoProfessor));
-    }
-
     public ResponseEntity getAllProfessores(){
-        var professores = professorRepository.findAll();
-        return ResponseEntity.ok().body(professores);
+        List<Professor> professores = professorRepository.findAll();
+        List<ProfessorResponse> response = professores.stream()
+                .map(p -> new ProfessorResponse(
+                        p.getId(),
+                        p.getLogin(),
+                        p.getUser().getPassword()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(response);
     }
 
     public ResponseEntity getOneProfessor(@PathVariable(value = "id") Long id){

@@ -29,9 +29,9 @@ public class BancaService {
     private ProfessorRepository professorRepository;
 
     public ResponseEntity registerBanca(@RequestBody @Valid BancaRequest bancaRequest){
-        if (!alunoRepository.existsByNome(bancaRequest.integrante1().trim()) ||
-                !alunoRepository.existsByNome(bancaRequest.integrante2().trim()) ||
-                !alunoRepository.existsByNome(bancaRequest.integrante3().trim())) {
+        if (!alunoRepository.existsByLogin(bancaRequest.integrante1().trim()) ||
+                !alunoRepository.existsByLogin(bancaRequest.integrante2().trim()) ||
+                !alunoRepository.existsByLogin(bancaRequest.integrante3().trim())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante nao encontrado");
         }
 
@@ -40,7 +40,7 @@ public class BancaService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("integrante vinculado a outra banca");
         }
 
-        Professor orientador = professorRepository.findByNome(bancaRequest.orientador());
+        Professor orientador = professorRepository.findByLogin(bancaRequest.orientador());
 
         if(orientador == null){
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("erro");
@@ -49,10 +49,10 @@ public class BancaService {
         List<Professor> professores = new ArrayList<>();
 
         for (Professor professorRequest : bancaRequest.professores()) {
-            Professor professorAtual = professorRepository.findByNome(professorRequest.getNome());
-
+            System.out.println("Buscando professor com login: " + professorRequest.getLogin());  // Log
+            Professor professorAtual = professorRepository.findByLogin(professorRequest.getLogin());
             if (professorAtual == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("professor nao encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Professor não encontrado: " + professorRequest.getLogin());
             }
             professores.add(professorAtual);
         }
@@ -72,12 +72,12 @@ public class BancaService {
 
                     if (banca.getDataHoraApresentacao() == null) {
                         return new ApresentacaoBanca(banca.getId(), banca.getTitulo(), banca.getIntegrante1(),
-                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador().getNome(),
+                                banca.getIntegrante2(), banca.getIntegrante3(), banca.getOrientador().getLogin(),
                                 null, null);
 
                     } else {
                         List<String> nomesProfessores = banca.getProfessores().stream()
-                                .map(Professor::getNome)
+                                .map(Professor::getLogin)
                                 .collect(Collectors.toList());
 
                         return new ApresentacaoBanca(
@@ -86,7 +86,7 @@ public class BancaService {
                                 banca.getIntegrante1(),
                                 banca.getIntegrante2(),
                                 banca.getIntegrante3(),
-                                banca.getOrientador().getNome(),
+                                banca.getOrientador().getLogin(),
                                 nomesProfessores,
                                 banca.getDataHoraApresentacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                         );

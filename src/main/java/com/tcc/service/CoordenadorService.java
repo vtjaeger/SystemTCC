@@ -1,10 +1,9 @@
 package com.tcc.service;
 
-import com.tcc.dtos.request.coordenador.CoordenadorRequest;
 import com.tcc.dtos.request.coordenador.DataInicio;
+import com.tcc.dtos.response.coordenador.CoordResponse;
 import com.tcc.models.Coordenador;
 import com.tcc.repository.CoordenadorRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,25 +14,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CoordenadorService {
     @Autowired
     private CoordenadorRepository coordenadorRepository;
 
-    public ResponseEntity<Coordenador> registerCoordenador(@RequestBody @Valid CoordenadorRequest coordenadorRequest){
-        var coordenador = new Coordenador(coordenadorRequest);
-
-        //conta todos os coordenadores
-        if(coordenadorRepository.count() >= 1){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok().body(coordenadorRepository.save(coordenador));
-    }
-
     public ResponseEntity getAllCoordenadores(){
         List<Coordenador> coordenadores = coordenadorRepository.findAll();
-        return ResponseEntity.ok().body(coordenadores);
+        List<CoordResponse> response = coordenadores.stream()
+                .map(coord -> new CoordResponse(
+                        coord.getId(),
+                        coord.getLogin(),
+                        coord.getUser().getPassword(),
+                        coord.getDataInicio(),
+                        coord.getDataFinal()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(response);
     }
 
     public ResponseEntity setDate(@PathVariable(value = "id") Long id, @RequestBody DataInicio dto){

@@ -1,9 +1,7 @@
 package com.tcc.controller;
 
-import com.tcc.dtos.request.coordenador.CoordenadorRequest;
 import com.tcc.dtos.request.coordenador.DataInicio;
 import com.tcc.service.CoordenadorService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class CoordenadorController {
     @Autowired
     CoordenadorService coordenadorService;
-
-    @PostMapping
-    public ResponseEntity cadastrarCoordenador(@RequestBody @Valid CoordenadorRequest coordenadorRequest){
-        return coordenadorService.registerCoordenador(coordenadorRequest);
-    }
 
     @GetMapping
     public ResponseEntity getCoordenadores(){
