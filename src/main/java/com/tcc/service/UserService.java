@@ -54,7 +54,7 @@ public class UserService {
             case ADMIN -> {
                 user.setRole(UserRole.ADMIN);
             }
-            default -> throw new IllegalArgumentException("Tipo de usuário inválido.");
+            default -> throw new IllegalArgumentException("invalid role");
         }
         userRepository.save(user);
 

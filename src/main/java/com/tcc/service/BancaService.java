@@ -49,10 +49,10 @@ public class BancaService {
         List<Professor> professores = new ArrayList<>();
 
         for (Professor professorRequest : bancaRequest.professores()) {
-            System.out.println("Buscando professor com login: " + professorRequest.getLogin());  // Log
             Professor professorAtual = professorRepository.findByLogin(professorRequest.getLogin());
+
             if (professorAtual == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Professor não encontrado: " + professorRequest.getLogin());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("professor nao encontrado");
             }
             professores.add(professorAtual);
         }

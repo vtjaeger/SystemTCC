@@ -52,7 +52,7 @@ public class ProfessorService {
                 .collect(Collectors.toList());
 
         if(coordenadores.isEmpty()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Sem coordenadores cadastrados ainda.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("informar coordenador");
         }
 
         var coordenador = coordenadores.get(0);
