@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,12 +28,17 @@ public class ProfessorService {
     private CoordenadorRepository coordenadorRepository;
 
     public ResponseEntity getAllProfessores(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         List<Professor> professores = professorRepository.findAll();
         List<ProfessorResponse> response = professores.stream()
                 .map(p -> new ProfessorResponse(
                         p.getId(),
                         p.getLogin(),
-                        p.getUser().getPassword()
+                        p.getUser().getPassword(),
+                        p.getHorariosDisponiveis().
+                                stream()
+                                .map(h -> h.format(formatter))
+                                .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(response);
@@ -57,7 +64,8 @@ public class ProfessorService {
 
         var coordenador = coordenadores.get(0);
 
-        if(horariosRequest.getDateTime().isBefore(coordenador.getDataInicio()) || horariosRequest.getDateTime().isAfter(coordenador.getDataFinal())){
+        if(horariosRequest.getDateTime().isBefore(coordenador.getDataInicio()) ||
+                horariosRequest.getDateTime().isAfter(coordenador.getDataFinal())){
             return ResponseEntity.badRequest().body("horario indisponivel");
         }
 
