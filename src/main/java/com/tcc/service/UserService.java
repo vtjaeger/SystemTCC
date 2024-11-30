@@ -1,5 +1,6 @@
 package com.tcc.service;
 
+import com.tcc.dtos.request.user.LoginRequest;
 import com.tcc.dtos.request.user.UserRequest;
 import com.tcc.models.*;
 import com.tcc.repository.AlunoRepository;
@@ -64,5 +65,9 @@ public class UserService {
     public ResponseEntity getUsers(){
         List<User> userList = userRepository.findAll();
         return ResponseEntity.ok().body(userList);
+    }
+
+    public ResponseEntity login(LoginRequest dto){
+        return null;
     }
 }
