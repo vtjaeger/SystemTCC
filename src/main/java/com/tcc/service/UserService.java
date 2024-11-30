@@ -7,8 +7,11 @@ import com.tcc.repository.AlunoRepository;
 import com.tcc.repository.CoordenadorRepository;
 import com.tcc.repository.ProfessorRepository;
 import com.tcc.repository.UserRepository;
+import com.tcc.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,9 +26,12 @@ public class UserService {
     private ProfessorRepository professorRepository;
     @Autowired
     private CoordenadorRepository coordenadorRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ResponseEntity<User> saveUser(UserRequest userRequest) {
-        User user = new User(userRequest.login(), userRequest.password());
+        String encryptedPassword = passwordEncoder.encode(userRequest.password());
+        User user = new User(userRequest.login(), encryptedPassword);
         user.setEnabled(true);
         user.setRole(userRequest.role());
         user = userRepository.save(user);
@@ -67,7 +73,4 @@ public class UserService {
         return ResponseEntity.ok().body(userList);
     }
 
-    public ResponseEntity login(LoginRequest dto){
-        return null;
-    }
 }

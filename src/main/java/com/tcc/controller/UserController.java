@@ -2,9 +2,14 @@ package com.tcc.controller;
 
 import com.tcc.dtos.request.user.LoginRequest;
 import com.tcc.dtos.request.user.UserRequest;
+import com.tcc.models.User;
+import com.tcc.repository.UserRepository;
+import com.tcc.security.TokenService;
 import com.tcc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping
     public ResponseEntity addUser(@RequestBody UserRequest userRequest) {
@@ -24,7 +35,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(LoginRequest dto){
-        return userService.login(dto);
+    public ResponseEntity login(@RequestBody LoginRequest dto){
+        var usernamePassword = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
+        var auth = authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(token);
     }
 }

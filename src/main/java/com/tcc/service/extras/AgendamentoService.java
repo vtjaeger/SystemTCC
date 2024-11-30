@@ -44,13 +44,8 @@ public class AgendamentoService {
 
         Professor orientador = banca.getOrientador();
 
-        List<LocalDateTime> horariosOrdenadosOrientador = banca.getOrientador().getHorariosDisponiveis()
-                .stream()
-                .sorted(Comparator.naturalOrder())
-                .collect(Collectors.toList());
-
         List<LocalDateTime> horariosEmComum = encontrarHorariosEmComumProfessoresDaBanca(horariosOrdenadosProfessores.get(0),
-                horariosOrdenadosProfessores.get(1), horariosOrdenadosOrientador);
+                horariosOrdenadosProfessores.get(1));
 
 
         if (!horariosEmComum.isEmpty()) {
@@ -105,15 +100,12 @@ public class AgendamentoService {
     }
 
     public List<LocalDateTime> encontrarHorariosEmComumProfessoresDaBanca(List<LocalDateTime> horariosP1,
-                                                                          List<LocalDateTime> horariosP2,
-                                                                          List<LocalDateTime> horariosOrientador) {
+                                                                          List<LocalDateTime> horariosP2) {
         List<LocalDateTime> horarios1 = horariosP1;
         List<LocalDateTime> horarios2 = horariosP2;
-        List<LocalDateTime> horarios3 = horariosOrientador;
 
         List<LocalDateTime> horariosEmComum = new ArrayList<>(horarios1);
         horariosEmComum.retainAll(horarios2);
-        horariosEmComum.retainAll(horarios3);
 
         horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.minusHours(1)));
         horariosEmComum.removeIf(horario -> apresentacaoRepository.existsByDataHora(horario.plusHours(1)));
