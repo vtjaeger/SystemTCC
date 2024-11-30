@@ -1,5 +1,6 @@
 package com.tcc.controller;
 
+import com.tcc.dtos.request.user.LoginRequest;
 import com.tcc.dtos.request.user.UserRequest;
 import com.tcc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,10 @@ public class UserController {
     @GetMapping
     public ResponseEntity getUsers(){
         return userService.getUsers();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity login(LoginRequest dto){
+        return userService.login(dto);
     }
 }
