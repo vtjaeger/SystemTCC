@@ -20,7 +20,7 @@ public class AlunoService {
         List<AlunoResponse> response = alunos.stream()
                 .map(aluno -> new AlunoResponse(
                         aluno.getLogin(),
-                        aluno.getLogin()
+                        aluno.getUser().getPassword()
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(response);

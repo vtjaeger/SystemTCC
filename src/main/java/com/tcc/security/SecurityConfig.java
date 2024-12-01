@@ -27,6 +27,20 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/coordenadores/**").hasRole("COORDENADOR")
+                        .requestMatchers(HttpMethod.POST, "/coordenadores").authenticated()
+
+                        .requestMatchers(HttpMethod.POST, "/banca").hasAnyRole("ALUNO", "PROFESSOR", "COORDENADOR")
+                        .requestMatchers(HttpMethod.GET, "/banca").hasAnyRole("PROFESSOR", "COORDENADOR")
+
+                        .requestMatchers(HttpMethod.POST, "/professor/**").hasRole("PROFESSOR")
+                        .requestMatchers(HttpMethod.GET, "/professor/").hasAnyRole("ALUNO", "PROFESSOR", "COORDENADOR")
+
+                        .requestMatchers(HttpMethod.GET, "/aluno").hasAnyRole("PROFESSOR", "COORDENADOR", "ALUNO")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -2,6 +2,7 @@ package com.tcc.controller;
 
 import com.tcc.dtos.request.user.LoginRequest;
 import com.tcc.dtos.request.user.UserRequest;
+import com.tcc.dtos.response.user.TokenResponse;
 import com.tcc.models.User;
 import com.tcc.repository.UserRepository;
 import com.tcc.security.TokenService;
@@ -40,6 +41,6 @@ public class UserController {
         var auth = authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 }
