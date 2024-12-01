@@ -130,4 +130,8 @@ public class User implements UserDetails {
     public void setCoordenador(Coordenador coordenador) {
         this.coordenador = coordenador;
     }
+
+    public void inactiveOrActive(){
+        this.enabled = !this.enabled;
+    }
 }

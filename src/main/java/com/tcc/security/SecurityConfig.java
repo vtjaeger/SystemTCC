@@ -29,6 +29,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/excel").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/user/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/coordenadores/**").hasRole("COORDENADOR")
                         .requestMatchers(HttpMethod.POST, "/coordenadores").authenticated()

@@ -13,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -35,6 +37,11 @@ public class UserController {
         return userService.getUsers();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity inactive(@PathVariable Long id){
+        return userService.inactiveOrActive(id);
+    }
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest dto){
         var usernamePassword = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
@@ -42,5 +49,10 @@ public class UserController {
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
         return ResponseEntity.ok(new TokenResponse(token));
+    }
+
+    @GetMapping("/excel")
+    public ResponseEntity generateExcel() throws IOException {
+        return userService.generateExcel();
     }
 }
